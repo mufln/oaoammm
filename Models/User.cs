@@ -15,7 +15,6 @@ public class User
     public string Phone { get; set; }
     [Required]
     public string Login { get; set; }
-    [Required]
     public int GroupId { get; set; }
     [Required]
     public int RoleId { get; set; }

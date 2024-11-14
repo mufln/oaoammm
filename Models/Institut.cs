@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace hihihiha.Models;
 
-public class Role
+public class Institut
 {
     public int Id { get; set; }
     [Required]
