@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace hihihiha.Models;
 
-public class Capmus
+public class Campus
 {
     public int Id { get; set; }
     [Required]

@@ -16,6 +16,8 @@ public class User
     [Required]
     public string Login { get; set; }
     public int GroupId { get; set; }
+    public Group? Group { get; set; }
     [Required]
     public int RoleId { get; set; }
+    public Role? Role { get; set; }
 }

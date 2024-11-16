@@ -5,22 +5,22 @@ namespace hihihiha.Context;
 
 public class ApplicationContext: DbContext
 {
-    public DbSet<User> Users => Set<User>();
-    public DbSet<Role> Roles => Set<Role>();
-    public DbSet<Group> Groups => Set<Group>();
-    public DbSet<Class> Classes => Set<Class>();
-    public DbSet<Institut> Instituts => Set<Institut>();
-    public DbSet<Lecturer> Lecturers => Set<Lecturer>();
-    public DbSet<Capmus> Capmus => Set<Capmus>();
-    public DbSet<TimeTable> TimeTables => Set<TimeTable>();
-    public ApplicationContext() => Database.EnsureCreated();
-    
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public required DbSet<User> Users { get; set; }
+    public required DbSet<Role> Roles { get; set; }
+    public required DbSet<Group> Groups { get; set; }
+    public required DbSet<Class> Classes { get; set; }
+    public required DbSet<Institut> Instituts { get; set; }
+    public required DbSet<Lecturer> Lecturers { get; set; }
+    public required DbSet<Campus> Capmus { get; set; }
+    public required DbSet<TimeTable> TimeTables { get; set; }
+
+    public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
-        optionsBuilder.UseNpgsql($"host={Env.DB_HOST}" +
-                                 $";port={Env.DB_PORT}" +
-                                 $";user={Env.DB_USER}" +
-                                 $";password={Env.DB_PASSWORD}" +
-                                 $";database={Env.DB_NAME}");
+        Database.EnsureCreated();
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
     }
 }

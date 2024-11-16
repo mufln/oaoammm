@@ -8,9 +8,9 @@ public class Class
     [Required]
     public string Name { get; set; }
     [Required]
-    public int hours { get; set; }
+    public int Hours { get; set; }
     [Required]
-    public int[] terms { get; set; }
+    public int[] Terms { get; set; }
     [Required]
-    public virtual List<Group> Groups { get; set; }
+    public ICollection<Group> Groups { get; set; }
 }
