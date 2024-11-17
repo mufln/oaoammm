@@ -3,9 +3,11 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
+        <LangVersion>preview</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <InvariantGlobalization>true</InvariantGlobalization>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <RootNamespace>hihihiha</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -28,10 +30,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Routers\Account\" />
-      <Folder Include="Routers\AdminPanel\" />
-      <Folder Include="Routers\Auth\" />
-      <Folder Include="Routers\TimeTable\" />
+      <_ContentIncludedByDefault Remove="Context\obj\hihihiha.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="Context\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="Context\obj\project.packagespec.json" />
     </ItemGroup>
 
 </Project>

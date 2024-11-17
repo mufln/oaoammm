@@ -1,7 +1,7 @@
-
 using hihihiha.Context;
 using Microsoft.EntityFrameworkCore;
 
+namespace hihihiha;
 class Program
 {
     static void Main(string[] args)
@@ -10,6 +10,7 @@ class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddDbContext<ApplicationContext>(opts => opts.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.AddControllers();
         var app = builder.Build();
         if (app.Environment.IsDevelopment())
         {
@@ -17,6 +18,14 @@ class Program
             app.UseSwaggerUI();
         }
         app.UseHttpsRedirection();
+        app.UseRouting();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllerRoute(
+                name: "group",
+                pattern: "{controller=group}/{id?}");
+
+        });
         app.Run();
     }
 }
