@@ -21,7 +21,7 @@ public class GroupsController : ControllerBase
     [HttpGet]
     public ActionResult<List<Group>> GetAllGroups()
     {
-        var groups = GroupService.GetAllGroups(_context);
+        var groups = GroupProvider.GetAllGroups(_context);
         return Ok(groups);
     }
 
@@ -30,7 +30,7 @@ public class GroupsController : ControllerBase
     [HttpGet("{id}")]
     public ActionResult<Group> GetGroupById(int id)
     {
-        var group = GroupService.GetGroupById(_context, id);
+        var group = GroupProvider.GetGroupById(_context, id);
         if (group == null)
         {
             return NotFound();
@@ -51,7 +51,7 @@ public class GroupsController : ControllerBase
 
         try
         {
-            GroupService.CreateGroup(_context, group);
+            GroupProvider.CreateGroup(_context, group);
             return Created("/api/group",  group);
         }
         catch (Exception e)
@@ -68,7 +68,7 @@ public class GroupsController : ControllerBase
         try
         {
             group.Id = id;
-            GroupService.UpdateGroup(_context, group);
+            GroupProvider.UpdateGroup(_context, group);
             return NoContent();
         }
         catch (Exception e)
@@ -84,7 +84,7 @@ public class GroupsController : ControllerBase
     {
         try
         {
-            GroupService.DeleteGroup(_context, id);
+            GroupProvider.DeleteGroup(_context, id);
             return NoContent();
         }
         catch (Exception e)

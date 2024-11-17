@@ -11,16 +11,13 @@ public class ApplicationContext: DbContext
     public required DbSet<Class> Classes { get; set; }
     public required DbSet<Institut> Instituts { get; set; }
     public required DbSet<Lecturer> Lecturers { get; set; }
-    public required DbSet<Campus> Capmus { get; set; }
+    public required DbSet<Campus> Campus { get; set; }
     public required DbSet<TimeTable> TimeTables { get; set; }
+    public required DbSet<Room> Rooms { get; set; }
+    public required DbSet<Session> Sessions { get; set; }
 
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
         Database.EnsureCreated();
-    }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
     }
 }

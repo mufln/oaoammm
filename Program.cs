@@ -18,14 +18,8 @@ class Program
             app.UseSwaggerUI();
         }
         app.UseHttpsRedirection();
-        app.UseRouting();
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllerRoute(
-                name: "group",
-                pattern: "{controller=group}/{id?}");
-
-        });
+        app.UseAuthorization();
+        app.MapControllers();
         app.Run();
     }
 }

@@ -2,21 +2,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace hihihiha.Services;
 
-public static class GroupService
+public static class GroupProvider
 {
-    // получить все группы
     public static List<Models.Group> GetAllGroups(Context.ApplicationContext context)
     {
         return context.Groups.ToList();
     }
 
-    // получить группу по id
     public static Models.Group GetGroupById(Context.ApplicationContext context, int id)
     {
         return context.Groups.Find(id);
     }
 
-    // создать группу
     public static void CreateGroup(Context.ApplicationContext context, Models.Group group)
     {
         try
@@ -30,7 +27,6 @@ public static class GroupService
         }
     }
 
-    // изменить группу по id
     public static void UpdateGroup(Context.ApplicationContext context, Models.Group group)
     {
         try
@@ -57,7 +53,6 @@ public static class GroupService
         }
     }
 
-    // удалить группу по id
     public static void DeleteGroup(Context.ApplicationContext context, int id)
     {
         var group = context.Groups.Find(id);
