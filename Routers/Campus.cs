@@ -8,7 +8,7 @@ namespace hihihiha.Routers;
 
 
 [ApiController]
-[Route("[controller]")]
+[Route("campus")]
 public class Campus : ControllerBase
 {
     private readonly ApplicationContext _context;

@@ -1,4 +1,5 @@
 using hihihiha.Context;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 namespace hihihiha;
@@ -11,6 +12,11 @@ class Program
         builder.Services.AddSwaggerGen();
         builder.Services.AddDbContext<ApplicationContext>(opts => opts.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
         builder.Services.AddControllers();
+        builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Auth";
+            });
         var app = builder.Build();
         if (app.Environment.IsDevelopment())
         {
@@ -18,6 +24,7 @@ class Program
             app.UseSwaggerUI();
         }
         app.UseHttpsRedirection();
+        app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
         app.Run();

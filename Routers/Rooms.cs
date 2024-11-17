@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace hihihiha.Routers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("rooms")]
 public class Rooms : ControllerBase
 {
     private readonly ApplicationContext _context;

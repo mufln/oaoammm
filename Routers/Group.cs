@@ -6,7 +6,7 @@ using hihihiha.Context; // Убедитесь, что у вас есть пра�
 namespace hihihiha.Routers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("groups")]
 public class GroupsController : ControllerBase
 {
     private readonly ApplicationContext _context;
