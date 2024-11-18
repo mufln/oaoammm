@@ -81,6 +81,7 @@ public class Performance : ControllerBase
         try
         {
             var performances = PerformanceProvider.GetPerformancesFiltered(_context, request);
+            
             return Ok(performances);
         }
         catch (Exception e)
