@@ -9,7 +9,7 @@ public static class GroupProvider
         return context.Groups.ToList();
     }
 
-    public static Models.Group GetGroupById(Context.ApplicationContext context, int id)
+    public static Models.Group? GetGroupById(Context.ApplicationContext context, int id)
     {
         return context.Groups.Find(id);
     }

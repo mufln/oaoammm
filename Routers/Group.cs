@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using hihihiha.Services;
-using hihihiha.Models; // Убедитесь, что у вас есть правильный путь к модели Group
-using hihihiha.Context; // Убедитесь, что у вас есть правильный путь к ApplicationContext
+using hihihiha.Models; 
+using hihihiha.Context;
 
 namespace hihihiha.Routers;
 
