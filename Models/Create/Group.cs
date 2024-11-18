@@ -9,4 +9,6 @@ public class Group
     public string Name { get; set; }
     [Required]
     public int InstitutId { get; set; }
+    
+    public Institut Institut { get; set; }
 }

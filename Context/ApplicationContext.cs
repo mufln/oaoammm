@@ -14,6 +14,7 @@ public class ApplicationContext: DbContext
     public required DbSet<Campus> Campus { get; set; }
     public required DbSet<TimeTable> TimeTables { get; set; }
     public required DbSet<Room> Rooms { get; set; }
+    public required DbSet<Performance> Performances { get; set; }
 
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
