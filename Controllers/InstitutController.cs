@@ -6,11 +6,11 @@ namespace hihihiha.Routers;
 
 [ApiController]
 [Route("institutes")]
-public class Institut : ControllerBase
+public class InstitutController : ControllerBase
 {
     private readonly ApplicationContext _context;    
 
-    public Institut(ApplicationContext context)
+    public InstitutController(ApplicationContext context)
     {
         _context = context;
     }

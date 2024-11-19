@@ -8,11 +8,11 @@ namespace hihihiha.Routers;
 
 [ApiController]
 [Route("timetable")]
-public class TimeTable : ControllerBase
+public class TimeTableController : ControllerBase
 {
     private readonly ApplicationContext _context;
 
-    public TimeTable(ApplicationContext context)
+    public TimeTableController(ApplicationContext context)
     {
         _context = context;
     }

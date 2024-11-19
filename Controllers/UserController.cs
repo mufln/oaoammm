@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace hihihiha.Routers;
 [ApiController]
 [Route("users")]
-public class User : ControllerBase
+public class UserController : ControllerBase
 {
     private readonly ApplicationContext _context;
 
-    public User(ApplicationContext context)
+    public UserController(ApplicationContext context)
     {
         _context = context;
     }
