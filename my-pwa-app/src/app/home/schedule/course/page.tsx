@@ -97,10 +97,10 @@ export default function ScheduleTable() {
         <Table className="w-full">
           <TableHeader>
             <TableRow>
-              <TableHead className="w-6 sticky left-0 z-20 bg-white text-black" rowSpan={2}>
+              <TableHead className="w-6 sticky left-0 z-1 bg-white text-black" rowSpan={2}>
                 <span className="sr-only text-black">День недели</span>
               </TableHead>
-              <TableHead className="w-32 sticky left-12 z-20 bg-white" rowSpan={2}>
+              <TableHead className="w-32 sticky left-12 z-1 bg-white" rowSpan={2}>
                 Время
               </TableHead>
               {groups.map((group, index) => (
