@@ -20,6 +20,7 @@ public class TimeTableProvider
         {
             context.TimeTables.Add(timeTable);
             context.SaveChanges();
+            Console.WriteLine($"Created TimeTable with ID: {timeTable.Id}");
         }
         catch (Exception e)
         {

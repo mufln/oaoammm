@@ -35,4 +35,9 @@
       <_ContentIncludedByDefault Remove="Context\obj\project.packagespec.json" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Migrations" />
+      <Folder Include="Migrations\" />
+    </ItemGroup>
+
 </Project>

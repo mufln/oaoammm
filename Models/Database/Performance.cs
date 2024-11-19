@@ -10,6 +10,7 @@ public class Performance
     public TimeTable? TimeTable { get; set; }
     [Required]
     public int UserId { get; set; }
+    public User? User { get; set; }
     [Required]
     public int Week { get; set; }
     public int Points { get; set; }

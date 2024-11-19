@@ -57,7 +57,7 @@ public class Env
             String? name = Environment.GetEnvironmentVariable("DB_NAME");
             if (name == null)
             {
-                return "sahei";
+                return "ef";
             }
             return name;
         }

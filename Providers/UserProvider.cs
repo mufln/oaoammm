@@ -61,9 +61,9 @@ public class UserProvider
             {
                 existingUser.GroupId = user.GroupId;
             }
-            if (user.RoleId != 0)
+            if (user.Role != 0)
             {
-                existingUser.RoleId = user.RoleId;
+                existingUser.Role = user.Role;
             }
             context.SaveChanges();
         }

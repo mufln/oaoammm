@@ -16,6 +16,7 @@ public class LecturerProvider
     {
         try
         {
+            lecturer.Classes = context.Classes.Where(c => lecturer.ClassesId.Contains(c.Id)).ToList();
             context.Lecturers.Add(lecturer);
             context.SaveChanges();
         }

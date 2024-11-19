@@ -97,8 +97,6 @@ namespace hihihiha.Migrations
 
                     b.HasIndex("ClassId");
 
-                    b.HasIndex("InstitutId");
-
                     b.HasIndex("TimeTableId");
 
                     b.ToTable("Groups");
@@ -168,6 +166,8 @@ namespace hihihiha.Migrations
 
                     b.HasIndex("TimeTableId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Performances");
                 });
 
@@ -204,6 +204,10 @@ namespace hihihiha.Migrations
 
                     b.Property<int>("ClassId")
                         .HasColumnType("integer");
+
+                    b.Property<int[]>("GroupsId")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
 
                     b.Property<int>("LecturerId")
                         .HasColumnType("integer");
@@ -258,9 +262,6 @@ namespace hihihiha.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("integer");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("GroupId");
@@ -281,17 +282,9 @@ namespace hihihiha.Migrations
                         .WithMany("Groups")
                         .HasForeignKey("ClassId");
 
-                    b.HasOne("hihihiha.Models.Institut", "Institut")
-                        .WithMany()
-                        .HasForeignKey("InstitutId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("hihihiha.Models.TimeTable", null)
                         .WithMany("Groups")
                         .HasForeignKey("TimeTableId");
-
-                    b.Navigation("Institut");
                 });
 
             modelBuilder.Entity("hihihiha.Models.Performance", b =>
@@ -302,7 +295,15 @@ namespace hihihiha.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("hihihiha.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("TimeTable");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("hihihiha.Models.TimeTable", b =>
