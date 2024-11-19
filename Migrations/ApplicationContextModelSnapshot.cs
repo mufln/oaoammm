@@ -47,6 +47,10 @@ namespace hihihiha.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int[]>("GroupsId")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
                     b.Property<int>("Hours")
                         .HasColumnType("integer");
 
@@ -93,6 +97,8 @@ namespace hihihiha.Migrations
 
                     b.HasIndex("ClassId");
 
+                    b.HasIndex("InstitutId");
+
                     b.HasIndex("TimeTableId");
 
                     b.ToTable("Groups");
@@ -123,6 +129,10 @@ namespace hihihiha.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int[]>("ClassesId")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
@@ -131,7 +141,7 @@ namespace hihihiha.Migrations
                     b.ToTable("Lecturers");
                 });
 
-            modelBuilder.Entity("hihihiha.Models.Role", b =>
+            modelBuilder.Entity("hihihiha.Models.Performance", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -139,13 +149,46 @@ namespace hihihiha.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("Attendance")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Points")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TimeTableId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Week")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TimeTableId");
+
+                    b.ToTable("Performances");
+                });
+
+            modelBuilder.Entity("hihihiha.Models.Room", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CampusId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("hihihiha.Models.TimeTable", b =>
@@ -169,6 +212,14 @@ namespace hihihiha.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CampusId");
+
+                    b.HasIndex("ClassId");
+
+                    b.HasIndex("LecturerId");
+
+                    b.HasIndex("RoomId");
 
                     b.ToTable("TimeTables");
                 });
@@ -204,14 +255,15 @@ namespace hihihiha.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
+
                     b.Property<int>("RoleId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("GroupId");
-
-                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
                 });
@@ -229,9 +281,63 @@ namespace hihihiha.Migrations
                         .WithMany("Groups")
                         .HasForeignKey("ClassId");
 
+                    b.HasOne("hihihiha.Models.Institut", "Institut")
+                        .WithMany()
+                        .HasForeignKey("InstitutId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("hihihiha.Models.TimeTable", null)
                         .WithMany("Groups")
                         .HasForeignKey("TimeTableId");
+
+                    b.Navigation("Institut");
+                });
+
+            modelBuilder.Entity("hihihiha.Models.Performance", b =>
+                {
+                    b.HasOne("hihihiha.Models.TimeTable", "TimeTable")
+                        .WithMany()
+                        .HasForeignKey("TimeTableId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TimeTable");
+                });
+
+            modelBuilder.Entity("hihihiha.Models.TimeTable", b =>
+                {
+                    b.HasOne("hihihiha.Models.Campus", "Campus")
+                        .WithMany()
+                        .HasForeignKey("CampusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("hihihiha.Models.Class", "Class")
+                        .WithMany()
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("hihihiha.Models.Lecturer", "Lecturer")
+                        .WithMany()
+                        .HasForeignKey("LecturerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("hihihiha.Models.Room", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Campus");
+
+                    b.Navigation("Class");
+
+                    b.Navigation("Lecturer");
+
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("hihihiha.Models.User", b =>
@@ -242,15 +348,7 @@ namespace hihihiha.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("hihihiha.Models.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Group");
-
-                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("hihihiha.Models.Class", b =>
