@@ -1,6 +1,6 @@
 namespace hihihiha.Models;
 
-public enum Role
+public enum Roles
 {
     Rector,
     Student,

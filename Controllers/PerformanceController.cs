@@ -1,4 +1,5 @@
 using hihihiha.Context;
+using hihihiha.Models;
 using hihihiha.Models.Get;
 using hihihiha.Models.Update;
 using hihihiha.Services;
@@ -81,7 +82,8 @@ public class PerformanceController : ControllerBase
         try
         {
             var performances = PerformanceProvider.GetPerformancesFiltered(_context, request);
-            
+            List<Tuple<User, List<Performance>>> usersPerformances = new();
+            Console.WriteLine(performances.GroupBy(p => p.User).ToList());
             return Ok(performances);
         }
         catch (Exception e)

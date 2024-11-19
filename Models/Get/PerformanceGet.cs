@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace hihihiha.Models.Get;
 
 public class PerformanceGet
@@ -6,6 +8,7 @@ public class PerformanceGet
     public int? UserId { get; set; }
     public int? Week { get; set; }
     public int? Points { get; set; }
+    [Required]
     public int? ClassId { get; set; }
     public int? GroupId { get; set; }
     public bool? PointsAscending { get; set; }
