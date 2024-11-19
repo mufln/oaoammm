@@ -34,7 +34,31 @@ public class TimeTable : ControllerBase
 
         return Ok(timeTable);
     }
+
+    [HttpGet("group/{id}")]
+    public ActionResult<List<TimeTable>> GetTimeTablesByGroupId(int id)
+    {
+        var timeTables = TimeTableProvider.GetTimeTablesByGroupId(_context, id);
+        if (timeTables.Count == 0)
+        {
+            return NotFound();
+        }
+
+        return Ok(timeTables);
+    }
     
+    [HttpGet("lecturer/{id}")]
+    public ActionResult<List<TimeTable>> GetTimeTablesByLecturerId(int id)
+    {
+        var timeTables = TimeTableProvider.GetTimeTablesByLecturerId(_context, id);
+        if (timeTables.Count == 0)
+        {
+            return NotFound();
+        }
+
+        return Ok(timeTables);
+    }
+
     [HttpPost]
     public ActionResult CreateTimeTable([FromBody] Models.TimeTable timeTable)
     {
