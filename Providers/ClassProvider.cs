@@ -22,8 +22,8 @@ public class ClassProvider
     public static void CreateClass(Context.ApplicationContext context, Models.Class newClass)
     {
         // newClass.Groups = new List<Group>();
-        // newClass.Groups = context.Groups.Where(g => newClass.Groups.Select(ng => ng.Id).Contains(g.Id)).ToList();
-        //
+        newClass.Groups = context.Groups.Where(g => newClass.GroupsId.Contains(g.Id)).ToList();
+        
         try
         {
             context.Classes.Add(newClass);

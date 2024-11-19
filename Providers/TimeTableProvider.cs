@@ -20,6 +20,7 @@ public class TimeTableProvider
         {
             context.TimeTables.Add(timeTable);
             context.SaveChanges();
+            Console.WriteLine($"Created TimeTable with ID: {timeTable.Id}");
         }
         catch (Exception e)
         {
@@ -69,4 +70,14 @@ public class TimeTableProvider
             context.SaveChanges();
         }
     }   
+    
+    public static List<Models.TimeTable> GetTimeTablesByGroupId(Context.ApplicationContext context, int id)
+    {
+        return context.TimeTables.Where(t => t.Groups.Any(g => g.Id == id)).ToList();
+    }
+    
+    public static List<Models.TimeTable> GetTimeTablesByLecturerId(Context.ApplicationContext context, int id)
+    {
+        return context.TimeTables.Where(t => t.LecturerId == id).ToList();
+    }
 }

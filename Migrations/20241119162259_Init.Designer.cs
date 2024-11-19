@@ -12,7 +12,7 @@ using hihihiha.Context;
 namespace hihihiha.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20241119093432_Init")]
+    [Migration("20241119162259_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -130,6 +130,10 @@ namespace hihihiha.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int[]>("ClassesId")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
@@ -203,6 +207,10 @@ namespace hihihiha.Migrations
 
                     b.Property<int>("ClassId")
                         .HasColumnType("integer");
+
+                    b.Property<int[]>("GroupsId")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
 
                     b.Property<int>("LecturerId")
                         .HasColumnType("integer");
