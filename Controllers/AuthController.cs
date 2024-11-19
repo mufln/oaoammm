@@ -8,11 +8,11 @@ namespace hihihiha.Routers;
 
 [ApiController]
 [Route("auth")]
-public class Auth : ControllerBase
+public class AuthController : ControllerBase
 {
     private readonly ApplicationContext _context;
 
-    public Auth(ApplicationContext context)
+    public AuthController(ApplicationContext context)
     {
         _context = context;
     }
@@ -40,7 +40,7 @@ public class Auth : ControllerBase
             {
                 return Unauthorized();
             }
-            await Authenticate(user.Email, user.Role.Name);
+            await Authenticate(user.Email, user.Role.ToString());
             return Ok();
         }
         catch (Exception e)

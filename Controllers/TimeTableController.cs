@@ -8,23 +8,23 @@ namespace hihihiha.Routers;
 
 [ApiController]
 [Route("timetable")]
-public class TimeTable : ControllerBase
+public class TimeTableController : ControllerBase
 {
     private readonly ApplicationContext _context;
 
-    public TimeTable(ApplicationContext context)
+    public TimeTableController(ApplicationContext context)
     {
         _context = context;
     }
     [HttpGet]
-    public ActionResult<List<TimeTable>> GetAllTimeTables()
+    public ActionResult<List<Models.TimeTable>> GetAllTimeTables()
     {
         var timeTables = TimeTableProvider.GetAllTimeTables(_context);
         return Ok(timeTables);
     }
     
     [HttpGet("{id}")]
-    public ActionResult<TimeTable> GetTimeTableById(int id)
+    public ActionResult<Models.TimeTable> GetTimeTableById(int id)
     {
         var timeTable = TimeTableProvider.GetTimeTableById(_context, id);
         if (timeTable == null)

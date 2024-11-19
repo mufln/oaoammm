@@ -8,10 +8,10 @@ namespace hihihiha.Routers;
 
 [ApiController]
 [Route("performances")]
-public class Performance : ControllerBase
+public class PerformanceController : ControllerBase
 {
     private readonly ApplicationContext _context;
-    public Performance(ApplicationContext context)
+    public PerformanceController(ApplicationContext context)
     {
         _context = context;
     }
@@ -76,7 +76,7 @@ public class Performance : ControllerBase
     }
 
     [HttpPost("filter_by")]
-    public ActionResult<List<Performance>> GetPerformanceFiltered(PerformanceGet request)
+    public ActionResult<List<Models.Performance>> GetPerformanceFiltered(PerformanceGet request)
     {
         try
         {
