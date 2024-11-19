@@ -76,7 +76,7 @@ public class Performance : ControllerBase
     }
 
     [HttpPost("filter_by")]
-    public ActionResult<List<Performance>> GetPerformanceFiltered(PerformanceGet request)
+    public ActionResult<List<Models.Performance>> GetPerformanceFiltered(PerformanceGet request)
     {
         try
         {
