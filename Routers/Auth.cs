@@ -40,7 +40,7 @@ public class Auth : ControllerBase
             {
                 return Unauthorized();
             }
-            await Authenticate(user.Email, user.Role.Name);
+            await Authenticate(user.Email, user.Role.ToString());
             return Ok();
         }
         catch (Exception e)

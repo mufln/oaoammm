@@ -6,7 +6,6 @@ namespace hihihiha.Context;
 public class ApplicationContext: DbContext
 {
     public required DbSet<User> Users { get; set; }
-    public required DbSet<Role> Roles { get; set; }
     public required DbSet<Group> Groups { get; set; }
     public required DbSet<Class> Classes { get; set; }
     public required DbSet<Institut> Instituts { get; set; }
@@ -18,6 +17,7 @@ public class ApplicationContext: DbContext
 
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
-        DatabaseDefaults.Validate(this);
+        Database.EnsureCreated();
+        Database.Migrate();
     }
 }

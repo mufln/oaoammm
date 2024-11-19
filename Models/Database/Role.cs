@@ -1,10 +1,9 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace hihihiha.Models;
 
-public class Role
+public enum Role
 {
-    public int Id { get; set; }
-    [Required]
-    public string Name { get; set; }
+    Rector,
+    Student,
+    Lecturer,
+    HeadOfDepartment
 }
