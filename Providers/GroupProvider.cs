@@ -6,19 +6,20 @@ public static class GroupProvider
 {
     public static List<Models.Group> GetAllGroups(Context.ApplicationContext context)
     {
-        return context.Groups.ToList();
+        return context.Groups.Include(group => group.Institut).ToList();
     }
 
     public static Models.Group? GetGroupById(Context.ApplicationContext context, int id)
     {
-        return context.Groups.Find(id);
+        return context.Groups.Include(group => group.Institut).FirstOrDefault(group => group.Id == id);
     }
 
-    public static void CreateGroup(Context.ApplicationContext context, Models.Group group)
+    public static void CreateGroup(Context.ApplicationContext context, Models.GroupCreate group)
     {
         try
         {
-            context.Groups.Add(group);
+            var newGroup = new Models.Group { Name = group.Name, InstitutId = group.InstitutId };
+            context.Groups.Add(newGroup);
             context.SaveChanges();
         }
         catch (Exception e)
@@ -41,10 +42,12 @@ public static class GroupProvider
             {
                 existingGroup.Name = group.Name;
             }
+
             if (group.InstitutId != 0)
             {
                 existingGroup.InstitutId = group.InstitutId;
             }
+
             context.SaveChanges();
         }
         catch (Exception e)

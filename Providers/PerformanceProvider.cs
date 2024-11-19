@@ -1,6 +1,11 @@
 using hihihiha.Context;
+using hihihiha.Models;
 using hihihiha.Models.Get;
+using hihihiha.Models.Response;
 using hihihiha.Models.Update;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using Npgsql.TypeMapping;
 
 namespace hihihiha.Services;
 
@@ -16,9 +21,15 @@ public class PerformanceProvider
         return context.Performances.Find(id);
     }
 
-    static public void CreatePerformance(ApplicationContext context, Models.Performance performance)
+    static public void CreatePerformance(ApplicationContext context, Models.PerformanceCreate performance)
     {
-        context.Performances.Add(performance);
+        var Performance = new Performance();
+        Performance.TimeTableId = performance.TimeTableId;
+        Performance.UserId = performance.UserId;
+        Performance.Week = performance.Week;
+        Performance.Points = performance.Points;
+        Performance.Attendance = performance.Attendance;
+        context.Performances.Add(Performance);
         context.SaveChanges();
     }
 
@@ -33,26 +44,31 @@ public class PerformanceProvider
         context.Performances.Remove(new Models.Performance { Id = id });
         context.SaveChanges();
     }
-    
-    public static List<Models.Performance> GetPerformancesFiltered(ApplicationContext context, PerformanceGet request)
+
+    public static async Task<ICollection<UserPerformance>> GetPerformancesFiltered(
+        ApplicationContext context, PerformanceGet request)
     {
         var performances = context.Performances.AsQueryable();
         if (request.ClassId != null)
         {
             performances = performances.Where(p => p.TimeTable.ClassId == request.ClassId);
         }
+
         if (request.UserId != null)
         {
             performances = performances.Where(p => p.UserId == request.UserId);
         }
+
         if (request.Week != null)
         {
             performances = performances.Where(p => p.Week == request.Week);
         }
+
         if (request.GroupId != null)
         {
             performances = performances.Where(p => p.TimeTable.Groups.Any(g => g.Id == request.GroupId));
         }
+
         if (request.PointsAscending != null)
         {
             if (request.PointsAscending == true)
@@ -62,8 +78,9 @@ public class PerformanceProvider
             else
             {
                 performances = performances.OrderByDescending(p => p.Points);
-            }   
+            }
         }
+
         if (request.AttendanceAscending != null)
         {
             if (request.AttendanceAscending == true)
@@ -73,8 +90,17 @@ public class PerformanceProvider
             else
             {
                 performances = performances.OrderByDescending(p => p.Attendance);
-            }   
+            }
         }
-        return performances.ToList();
+
+        var groupedPerformances = performances
+            .GroupBy(entry => entry.User)
+            .Select(g => new UserPerformance
+            {
+                Average = g.Average(p => p.Points),
+                Performances = g.ToList(),
+                User = g.Key
+            });
+        return await groupedPerformances.ToListAsync();
     }
 }

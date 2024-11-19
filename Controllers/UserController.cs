@@ -35,7 +35,7 @@ public class UserController : ControllerBase
     }
 
    [HttpPost]
-    public ActionResult CreateUser([FromBody] Models.User user)
+    public ActionResult CreateUser([FromBody] Models.UserCreate? user)
     {
         if (user == null)
         {

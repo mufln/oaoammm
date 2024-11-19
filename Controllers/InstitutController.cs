@@ -35,7 +35,7 @@ public class InstitutController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult CreateInstitution([FromBody] Models.Institut institution)
+    public ActionResult CreateInstitution([FromBody] Models.InstitutCreate? institution)
     {
         if (institution == null)
         {

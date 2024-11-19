@@ -14,11 +14,21 @@ public class UserProvider
         return context.Users.Find(id);
     }
 
-    public static void CreateUser(Context.ApplicationContext context, Models.User user)
+    public static void CreateUser(Context.ApplicationContext context, Models.UserCreate user)
     {
         try
         {
-            context.Users.Add(user);
+            var newUser = new Models.User
+            {
+                Name = user.Name, 
+                Email = user.Email, 
+                Password = user.Password, 
+                Phone = user.Phone, 
+                Login = user.Login,
+                GroupId = user.GroupId, 
+                Role = user.Role
+            };
+            context.Users.Add(newUser);
             context.SaveChanges();
         }
         catch (Exception e)
@@ -41,30 +51,37 @@ public class UserProvider
             {
                 existingUser.Name = user.Name;
             }
+
             if (!string.IsNullOrEmpty(user.Email))
             {
                 existingUser.Email = user.Email;
             }
+
             if (!string.IsNullOrEmpty(user.Password))
             {
                 existingUser.Password = user.Password;
             }
+
             if (!string.IsNullOrEmpty(user.Phone))
             {
                 existingUser.Phone = user.Phone;
             }
+
             if (!string.IsNullOrEmpty(user.Login))
             {
                 existingUser.Login = user.Login;
             }
+
             if (user.GroupId != 0)
             {
                 existingUser.GroupId = user.GroupId;
             }
+
             if (user.Role != 0)
             {
                 existingUser.Role = user.Role;
             }
+
             context.SaveChanges();
         }
         catch (Exception e)
@@ -81,5 +98,5 @@ public class UserProvider
             context.Users.Remove(user);
             context.SaveChanges();
         }
-    }       
+    }
 }

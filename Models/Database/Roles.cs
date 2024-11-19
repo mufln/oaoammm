@@ -3,7 +3,7 @@ namespace hihihiha.Models;
 public enum Roles
 {
     Rector,
-    Student,
+    HeadOfDepartment,
     Lecturer,
-    HeadOfDepartment
+    Student
 }

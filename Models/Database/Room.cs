@@ -5,8 +5,7 @@ namespace hihihiha.Models;
 public class Room
 {
     public int Id { get; set; }
-    [Required]
-    public string Name { get; set; }
-    [Required]
+    [MaxLength(64)]
+    public required string Name { get; set; }
     public int CampusId { get; set; }
 }
