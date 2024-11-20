@@ -16,25 +16,18 @@ public class UserProvider
 
     public static void CreateUser(Context.ApplicationContext context, Models.UserCreate user)
     {
-        try
+        var newUser = new Models.User
         {
-            var newUser = new Models.User
-            {
-                Name = user.Name, 
-                Email = user.Email, 
-                Password = user.Password, 
-                Phone = user.Phone, 
-                Login = user.Login,
-                GroupId = user.GroupId, 
-                Role = user.Role
-            };
-            context.Users.Add(newUser);
-            context.SaveChanges();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine($"Exception while creating user: {e.Message}");
-        }
+            Name = user.Name,
+            Email = user.Email,
+            Password = user.Password,
+            Phone = user.Phone,
+            Login = user.Login,
+            GroupId = user.GroupId,
+            Role = user.Role
+        };
+        context.Users.Add(newUser);
+        context.SaveChanges();
     }
 
     public static void UpdateUser(Context.ApplicationContext context, Models.User user)
