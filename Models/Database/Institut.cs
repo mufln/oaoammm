@@ -5,6 +5,6 @@ namespace hihihiha.Models;
 public class Institut
 {
     public int Id { get; set; }
-    [Required]
-    public string Name { get; set; }
+    [MaxLength(256)]
+    public required string Name { get; set; }
 }

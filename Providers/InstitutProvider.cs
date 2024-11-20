@@ -1,3 +1,5 @@
+using hihihiha.Models;
+
 namespace hihihiha.Services;
 
 public class InstitutProvider
@@ -12,11 +14,12 @@ public class InstitutProvider
         return context.Instituts.Find(id);
     }
 
-    public static void CreateInstitution(Context.ApplicationContext context, Models.Institut institution)
+    public static void CreateInstitution(Context.ApplicationContext context, Models.InstitutCreate institution)
     {
         try
         {
-            context.Instituts.Add(institution);
+            var Institution = new Institut { Name = institution.Name };
+            context.Instituts.Add(Institution);
             context.SaveChanges();
         }
         catch (Exception e)
@@ -33,11 +36,13 @@ public class InstitutProvider
             if (existingInstitution == null)
             {
                 throw new Exception("Institution not found");
-            }  
+            }
+
             if (!string.IsNullOrEmpty(institution.Name))
             {
                 existingInstitution.Name = institution.Name;
             }
+
             context.SaveChanges();
         }
         catch (Exception e)
@@ -54,5 +59,5 @@ public class InstitutProvider
             context.Instituts.Remove(institution);
             context.SaveChanges();
         }
-    }   
+    }
 }

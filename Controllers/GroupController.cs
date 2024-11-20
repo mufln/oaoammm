@@ -42,7 +42,7 @@ public class GroupsController : ControllerBase
     // Создать группу
     // /groups
     [HttpPost]
-    public ActionResult CreateGroup([FromBody] Group? group)
+    public ActionResult CreateGroup([FromBody] GroupCreate? group)
     {
         if (group == null)
         {

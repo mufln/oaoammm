@@ -43,7 +43,8 @@ namespace hihihiha.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<int>(type: "integer", nullable: false)
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    ClassesId = table.Column<int[]>(type: "integer[]", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -94,6 +95,7 @@ namespace hihihiha.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     RoomId = table.Column<int>(type: "integer", nullable: false),
                     ClassId = table.Column<int>(type: "integer", nullable: false),
+                    GroupsId = table.Column<int[]>(type: "integer[]", nullable: false),
                     LecturerId = table.Column<int>(type: "integer", nullable: false),
                     CampusId = table.Column<int>(type: "integer", nullable: false)
                 },

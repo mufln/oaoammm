@@ -1,6 +1,7 @@
 using hihihiha.Context;
 using hihihiha.Models;
 using hihihiha.Models.Get;
+using hihihiha.Models.Response;
 using hihihiha.Models.Update;
 using hihihiha.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +30,7 @@ public class PerformanceController : ControllerBase
         return Ok(performance);
     }
     [HttpPost]
-    public ActionResult CreatePerformance(Models.Performance performance)
+    public ActionResult CreatePerformance(Models.PerformanceCreate performance)
     {
         if (performance == null)
         {
@@ -77,13 +78,11 @@ public class PerformanceController : ControllerBase
     }
 
     [HttpPost("filter_by")]
-    public ActionResult<List<Models.Performance>> GetPerformanceFiltered(PerformanceGet request)
+    public async Task<ActionResult<ICollection<UserPerformance>>> GetPerformanceFiltered(PerformanceGet request)
     {
         try
         {
-            var performances = PerformanceProvider.GetPerformancesFiltered(_context, request);
-            List<Tuple<User, List<Performance>>> usersPerformances = new();
-            Console.WriteLine(performances.GroupBy(p => p.User).ToList());
+            var performances = await PerformanceProvider.GetPerformancesFiltered(_context, request);
             return Ok(performances);
         }
         catch (Exception e)

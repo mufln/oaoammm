@@ -29,14 +29,14 @@ public class AuthController : ControllerBase
 
         try
         {
-            var user = _context.Users.FirstOrDefault(u => u.Email == login.email);
+            var user = _context.Users.FirstOrDefault(u => u.Email == login.Email);
                 
             if (user == null)
             {
                 return NotFound();
             }
 
-            if (!user.Password.Equals(login.password))
+            if (!user.Password.Equals(login.Password))
             {
                 return Unauthorized();
             }

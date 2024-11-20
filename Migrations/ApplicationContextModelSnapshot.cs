@@ -127,6 +127,10 @@ namespace hihihiha.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int[]>("ClassesId")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
@@ -200,6 +204,10 @@ namespace hihihiha.Migrations
 
                     b.Property<int>("ClassId")
                         .HasColumnType("integer");
+
+                    b.Property<int[]>("GroupsId")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
 
                     b.Property<int>("LecturerId")
                         .HasColumnType("integer");
