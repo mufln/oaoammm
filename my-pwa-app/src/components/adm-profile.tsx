@@ -40,7 +40,7 @@ const adminInfo = {
 }
 
 
-export default function AdminProfile() {
+export function AdminProfile() {
     const [isVisible, setIsVisible] = useState(false);
 
     const toggleVisibility = () => {
