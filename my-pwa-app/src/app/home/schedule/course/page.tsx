@@ -93,10 +93,10 @@ export default function ScheduleTable() {
           {isEvenWeek ? 'Четная неделя' : 'Нечетная неделя'}
         </Label>
       </div>
-      <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-md">
+      <div className="overflow-x-auto rounded-lg border border-gray-200">
         <Table className="w-full">
           <TableHeader>
-            <TableRow>
+            <TableRow key={0}>
               <TableHead className="w-6 sticky left-0 z-1 bg-white text-black" rowSpan={2}>
                 <span className="sr-only text-black">День недели</span>
               </TableHead>
@@ -104,22 +104,27 @@ export default function ScheduleTable() {
                 Время
               </TableHead>
               {groups.map((group, index) => (
-                <TableHead key={index} className="text-center text-blue-600" colSpan={2}>
+                <TableHead key={index} className="text-center text-blue-600" colSpan={3}>
                   {group.name}
                 </TableHead>
               ))}
             </TableRow>
-            <TableRow>
+            <TableRow key={1}>
               {groups.map((group, index) => (
                 <>
-                  <TableHead key={index} className="text-center w-48">
-                    <div className="flex items-center justify-center space-x-2">
+                  <TableHead key={`${index}-subject`} className="w-48">
+                    <div className="flex space-x-2">
+                      <span>Дисциплина</span>
+                    </div>
+                  </TableHead>
+                  <TableHead key={`${index}-teacher`} className="w-48">
+                    <div className="flex space-x-2">
                       <User className="h-4 w-4 text-primary" />
                       <span>Преподаватель</span>
                     </div>
                   </TableHead>
-                  <TableHead key={`${group.name}-room`} className="text-center w-24">
-                    <div className="flex items-center justify-center space-x-2">
+                  <TableHead key={`${index}-room`} className="w-24">
+                    <div className="flex space-x-2">
                       <MapPin className="h-4 w-4 text-primary" />
                       <span>Аудитория</span>
                     </div>
@@ -133,28 +138,30 @@ export default function ScheduleTable() {
               timeSlots.map((timeSlot, timeIndex) => (
                 <TableRow key={`${day}-${timeSlot}`}>
                   {timeIndex === 0 && (
-                    <TableCell rowSpan={timeSlots.length} className="font-medium sticky left-0 z-10 bg-white border-r p-0">
+                    <TableCell key={`${day}-${timeSlot}`} rowSpan={timeSlots.length} className="font-medium sticky left-0 z-10 bg-white border-r p-0">
                       <div className="h-full flex items-center justify-center">
                         <span className="transform -rotate-90 whitespace-nowrap">{day}</span>
                       </div>
                     </TableCell>
                   )}
                   <TableCell className="sticky left-12 z-10 bg-white">{timeSlot}</TableCell>
-                  {groups.map((group) => {
+                  {groups.map((group, index) => {
                     const lesson = group.schedule[isEvenWeek ? 'even' : 'odd'][day]?.find(
                       l => `${l.startTime} - ${l.endTime}` === timeSlot
                     )
                     return (
                       <>
-                        <TableCell key={`${group.name}-${day}-${timeSlot}-teacher`} className="p-2">
+                        <TableCell key={index*3} className="p-2">
                           {lesson ? (
-                            <div className="text-sm">
-                              <div className="font-semibold">{lesson.subject}</div>
-                              <div>{lesson.teacher}</div>
-                            </div>
+                            <div className="font-semibold">{lesson.subject}</div>
                           ) : null}
                         </TableCell>
-                        <TableCell key={`${group.name}-${day}-${timeSlot}-room`} className="p-2 text-center">
+                        <TableCell key={index*3 + 1} className="p-2">
+                          {lesson ? (
+                            <div>{lesson.teacher}</div>
+                          ) : null}
+                        </TableCell>
+                        <TableCell key={index*3 + 2} className="p-2 text-center">
                           {lesson ? <div className="text-sm font-medium">{lesson.room}</div> : null}
                         </TableCell>
                       </>
