@@ -61,7 +61,7 @@ export default function StudentPerformance() {
       <div className="flex space-x-4 mb-4">
         <div className="flex flex-col space-y-2">
           <Select onValueChange={(value) => setSelectedGroup(Number(value))}>
-            <SelectTrigger id="group-select" className="w-[180px]">
+            <SelectTrigger id="group-select" className="w-[180px] ring-1 ring-zinc-300 ring-inset">
               <SelectValue placeholder="Группа" />
             </SelectTrigger>
             <SelectContent>
@@ -73,7 +73,7 @@ export default function StudentPerformance() {
         </div>
         <div className="flex flex-col space-y-2">
           <Select onValueChange={(value) => setSelectedSubject(Number(value))}>
-            <SelectTrigger id="subject-select" className="w-[180px]">
+            <SelectTrigger id="subject-select" className="w-[180px] ring-1 ring-zinc-300 ring-inset">
               <SelectValue placeholder="Предмет" />
             </SelectTrigger>
             <SelectContent>
@@ -85,7 +85,7 @@ export default function StudentPerformance() {
         </div>
       </div>
       {(selectedGroupData && selectedSubjectData) ? (
-        <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-md">
+        <div className="overflow-x-auto rounded-lg border border-gray-200">
           <Table>
             <TableHeader>
               <TableRow>

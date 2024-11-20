@@ -8,10 +8,7 @@ import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
-  Popover,
-  PopoverButton,
   PopoverGroup,
-  PopoverPanel,
 } from '@headlessui/react'
 import {
   ArrowPathIcon,
@@ -23,6 +20,7 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
+import { StudentProfile } from '@/components/stud-profile'
 
 const user = {
   name: 'Tom Cook',
@@ -82,14 +80,7 @@ export default function Example({
             Успеваемость
           </a>
         </PopoverGroup>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="#" className='inline-flex max-w-max'>
-            <div className='flex flex-col'>
-              <div className='text-sm/6 font-semibold text-gray-900'>Профиль</div> 
-              <div className='text-xs text-gray-500'>Ректор</div>
-            </div>
-          </a>
-        </div>
+        <StudentProfile/>
       </nav>
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
         <div className="fixed inset-0 z-10" />

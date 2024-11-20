@@ -75,11 +75,8 @@ const people = [
               <img alt="" src={person.imageUrl} className="size-12 flex-none rounded-full bg-gray-50" />
               <div className="min-w-0 flex-auto">
                 <p className="text-sm/6 font-semibold text-gray-900">{person.name}</p>
-                <p className="mt-1 truncate text-xs/5 text-gray-500">{person.email}</p>
-              </div>
-            </div>
-            <Select>
-              <SelectTrigger className="w-[200px]">
+                <Select>
+              <SelectTrigger className="w-[200px] px-0">
                 <SelectValue placeholder={person.role}/>
               </SelectTrigger>
               <SelectContent>
@@ -92,6 +89,8 @@ const people = [
                 </SelectGroup>
               </SelectContent>
             </Select>
+              </div>
+            </div>
           </li>
         ))}
       </ul>
