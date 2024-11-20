@@ -1,6 +1,7 @@
 using hihihiha.Context;
 using hihihiha.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace hihihiha.Routers;
 
@@ -8,24 +9,25 @@ namespace hihihiha.Routers;
 [Route("institutes")]
 public class InstitutController : ControllerBase
 {
-    private readonly ApplicationContext _context;    
+    private readonly ApplicationContext _context;
 
     public InstitutController(ApplicationContext context)
     {
         _context = context;
     }
-    
+
     [HttpGet]
-    public ActionResult<List<Models.Institut>> GetAllInstitutions()
-    {        
-        var institutions = InstitutProvider.GetAllInstitutions(_context);
+    public async Task<ActionResult<List<Models.Institut>>> GetAllInstitutions()
+    {
+        var institutions = await _context.Instituts.ToListAsync();
         return Ok(institutions);
     }
 
+
     [HttpGet("{id}")]
-    public ActionResult<Models.Institut> GetInstitutionById(int id)
+    public async Task<ActionResult<Models.Institut>> GetInstitutionById(int id)
     {
-        var institution = InstitutProvider.GetInstitutionById(_context, id);
+        var institution = await _context.Instituts.FindAsync(id);
         if (institution == null)
         {
             return NotFound();
@@ -34,18 +36,16 @@ public class InstitutController : ControllerBase
         return Ok(institution);
     }
 
-    [HttpPost]
-    public ActionResult CreateInstitution([FromBody] Models.InstitutCreate? institution)
-    {
-        if (institution == null)
-        {
-            return UnprocessableEntity("Institution cannot be null.");
-        }
 
+    [HttpPost]
+    public async Task<ActionResult> CreateInstitution([FromBody] Models.InstitutCreate institution)
+    {
         try
         {
-            InstitutProvider.CreateInstitution(_context, institution);
-            return Created("/api/institution",  institution);
+            var newInstitution = new Models.Institut { Name = institution.Name };
+            await _context.Instituts.AddAsync(newInstitution);
+            await _context.SaveChangesAsync();
+            return Created();
         }
         catch (Exception e)
         {
@@ -53,13 +53,25 @@ public class InstitutController : ControllerBase
         }
     }
 
+    
     [HttpPut("{id}")]
-    public ActionResult UpdateInstitution(int id, [FromBody] Models.Institut institution)
+    public async Task<ActionResult> UpdateInstitution(int id, [FromBody] Models.Institut institution)
     {
         try
         {
             institution.Id = id;
-            InstitutProvider.UpdateInstitution(_context, institution);
+            var existingInstitution = await _context.Instituts.FindAsync(institution.Id);
+            if (existingInstitution == null)
+            {
+                throw new Exception("Institution not found");
+            }
+
+            if (!string.IsNullOrEmpty(institution.Name))
+            {
+                existingInstitution.Name = institution.Name;
+            }
+
+            await _context.SaveChangesAsync();
             return NoContent();
         }
         catch (Exception e)
@@ -68,12 +80,18 @@ public class InstitutController : ControllerBase
         }
     }
 
+    
     [HttpDelete("{id}")]
-    public ActionResult DeleteInstitution(int id)
+    public async Task<ActionResult> DeleteInstitution(int id)
     {
         try
         {
-            InstitutProvider.DeleteInstitution(_context, id);
+            var institution = await _context.Instituts.FindAsync(id);
+            if (institution != null)
+            {
+                _context.Instituts.Remove(institution);
+                await _context.SaveChangesAsync();
+            }
             return NoContent();
         }
         catch (Exception e)

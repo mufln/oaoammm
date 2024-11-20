@@ -2,6 +2,8 @@ using hihihiha.Context;
 using hihihiha.Models;
 using hihihiha.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace hihihiha.Routers;
 
@@ -18,51 +20,56 @@ public class CampusController : ControllerBase
         _context = context;
     }
     
+    
     [HttpGet]
-    public ActionResult<List<Models.Campus>> GetAllCampuses()
+    public async Task<ActionResult<List<Models.Campus>>> GetAllCampuses()
     {
-        var campuses = CampusProvider.GetAllCampuses(_context);
+        var campuses = await _context.Campus.ToListAsync();
         return Ok(campuses);
     }
 
+    
    [HttpGet("{id}")]
-    public ActionResult<Models.Campus> GetCampusById(int id)
+    public async Task<ActionResult<Models.Campus>> GetCampusById(int id)
     {
-        var campus = CampusProvider.GetCampusById(_context, id);
-        if (campus == null)
-        {
-            return NotFound();
-        }
-
+        var campus = await _context.Campus.FindAsync(id);
         return Ok(campus);
     }
 
+    
     [HttpPost]
-    public ActionResult CreateCampus([FromBody] Models.Campus campus)
+    public async Task<ActionResult> CreateCampus([FromBody] Models.Campus campus)
     {
-        if (campus == null)
-        {
-            return BadRequest("Campus cannot be null.");
-        }
-
         try
         {
-            CampusProvider.CreateCampus(_context, campus);
-            return Created("/api/campus",  campus);
+            await _context.Campus.AddAsync(campus);
+            await _context.SaveChangesAsync();
+            return Created();
         }
         catch (Exception e)
         {
             return StatusCode(500, $"Internal server error");
         }
     }
+    
 
    [HttpPut("{id}")]
-    public ActionResult UpdateCampus(int id, [FromBody] Models.Campus campus)
+    public async Task<ActionResult> UpdateCampus(int id, [FromBody] Models.Campus campus)
     {
         try
         {
             campus.Id = id;
-            CampusProvider.UpdateCampus(_context, campus);
+            var existingCampus = await _context.Campus.FindAsync(campus.Id);
+            if (existingCampus == null)
+            {
+                return NotFound();
+            }
+
+            if (!string.IsNullOrEmpty(campus.Address))
+            {
+                existingCampus.Address = campus.Address;
+            }
+            await _context.SaveChangesAsync();
             return NoContent();
         }
         catch (Exception e)
@@ -70,13 +77,19 @@ public class CampusController : ControllerBase
             return StatusCode(500, $"Internal server error");
         }
     }
+    
 
     [HttpDelete("{id}")]
-    public ActionResult DeleteCampus(int id)
+    public async Task<ActionResult> DeleteCampus(int id)
     {
         try
         {
-            CampusProvider.DeleteCampus(_context, id);
+            var campus = await _context.Campus.FindAsync(id);
+            if (campus != null)
+            {
+                _context.Campus.Remove(campus);
+                await _context.SaveChangesAsync();
+            }
             return NoContent();
         }
         catch (Exception e)
