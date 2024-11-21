@@ -20,7 +20,7 @@ public class RoomsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<Models.Room>>> GetAllRooms()
     {
-        var rooms = await _context.Rooms.ToListAsync();
+        var rooms = await _context.Rooms.Include(r => r.Campus).ToListAsync();
         return Ok(rooms);
     }
 
@@ -28,7 +28,7 @@ public class RoomsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Models.Room>> GetRoomById(int id)
     {
-        var room = await _context.Rooms.FindAsync(id);
+        var room = await _context.Rooms.Include(r => r.Campus).FirstOrDefaultAsync(r => r.Id == id);
         if (room == null)
         {
             return NotFound();
@@ -42,6 +42,7 @@ public class RoomsController : ControllerBase
     {
         try
         {
+            room.Campus = await _context.Campus.FirstOrDefaultAsync(c => c.Id == room.CampusId);
             await _context.Rooms.AddAsync(room);
             await _context.SaveChangesAsync();
             return Created();
@@ -59,7 +60,7 @@ public class RoomsController : ControllerBase
         try
         {
             room.Id = id;
-            var existingRoom = await _context.Rooms.FindAsync(room.Id);
+            var existingRoom = await _context.Rooms.Include(r => r.Campus).FirstOrDefaultAsync(r => r.Id == room.Id);
             if (existingRoom == null)
             {
                 return NoContent();
@@ -71,6 +72,7 @@ public class RoomsController : ControllerBase
             if (room.CampusId != 0)
             {
                 existingRoom.CampusId = room.CampusId;
+                existingRoom.Campus = await _context.Campus.FirstOrDefaultAsync(c => c.Id == room.CampusId);
             }
             await _context.SaveChangesAsync();
             return NoContent();

@@ -8,4 +8,5 @@ public class Room
     [MaxLength(64)]
     public required string Name { get; set; }
     public int CampusId { get; set; }
+    public Campus? Campus { get; set; }
 }
