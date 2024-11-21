@@ -11,5 +11,5 @@ public class Class
     public required int[] Terms { get; set; }
     
     public required int[] GroupsId { get; set; }
-    public ICollection<Group> Groups { get; set; }
+    public ICollection<Group>? Groups { get; set; }
 }

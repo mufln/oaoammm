@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using hihihiha.Services;
 using hihihiha.Models; 
 using hihihiha.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace hihihiha.Routers;
 
@@ -17,16 +18,16 @@ public class TimeTableController : ControllerBase
         _context = context;
     }
     [HttpGet]
-    public ActionResult<List<Models.TimeTable>> GetAllTimeTables()
+    public async Task<ActionResult<List<Models.TimeTable>>> GetAllTimeTables()
     {
-        var timeTables = TimeTableProvider.GetAllTimeTables(_context);
+        var timeTables = await _context.TimeTables.ToListAsync();
         return Ok(timeTables);
     }
     
     [HttpGet("{id}")]
-    public ActionResult<Models.TimeTable> GetTimeTableById(int id)
+    public async Task<ActionResult<Models.TimeTable>> GetTimeTableById(int id)
     {
-        var timeTable = TimeTableProvider.GetTimeTableById(_context, id);
+        var timeTable = await _context.TimeTables.FindAsync(id);
         if (timeTable == null)
         {
             return NotFound();
@@ -34,23 +35,11 @@ public class TimeTableController : ControllerBase
 
         return Ok(timeTable);
     }
-
-    [HttpGet("group/{id}")]
-    public ActionResult<List<TimeTable>> GetTimeTablesByGroupId(int id)
-    {
-        var timeTables = TimeTableProvider.GetTimeTablesByGroupId(_context, id);
-        if (timeTables.Count == 0)
-        {
-            return NotFound();
-        }
-
-        return Ok(timeTables);
-    }
     
     [HttpGet("lecturer/{id}")]
-    public ActionResult<List<TimeTable>> GetTimeTablesByLecturerId(int id)
+    public async Task<ActionResult<List<TimeTable>>> GetTimeTablesByLecturerId(int id)
     {
-        var timeTables = TimeTableProvider.GetTimeTablesByLecturerId(_context, id);
+        var timeTables = await _context.TimeTables.Where(t => t.LecturerId == id).ToListAsync();
         if (timeTables.Count == 0)
         {
             return NotFound();
@@ -60,7 +49,7 @@ public class TimeTableController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult CreateTimeTable([FromBody] Models.TimeTable timeTable)
+    public async Task<ActionResult> CreateTimeTable([FromBody] Models.TimeTable? timeTable)
     {
         if (timeTable == null)
         {
@@ -69,8 +58,9 @@ public class TimeTableController : ControllerBase
 
         try
         {
-            TimeTableProvider.CreateTimeTable(_context, timeTable);
-            return Created("/api/timetable",  timeTable);
+            await _context.TimeTables.AddAsync(timeTable);
+            await _context.SaveChangesAsync();
+            return Created("/api/timetable", timeTable);
         }
         catch (Exception e)
         {
@@ -79,12 +69,32 @@ public class TimeTableController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public ActionResult UpdateTimeTable([FromBody] Models.TimeTable timeTable, int id)
+    public async Task<ActionResult> UpdateTimeTable([FromBody] Models.TimeTable timeTable, int id)
     {
         try
         {
-            timeTable.Id = id;
-            TimeTableProvider.UpdateTimeTable(_context, timeTable);
+            TimeTable? existingTimeTable = await _context.TimeTables.FindAsync(id);
+            if (existingTimeTable == null)
+            {
+                throw new Exception("TimeTable not found");
+            }
+            if (timeTable.RoomId != 0)
+            {
+                existingTimeTable.RoomId = timeTable.RoomId;
+            }
+            if (timeTable.ClassId != 0)
+            {
+                existingTimeTable.ClassId = timeTable.ClassId;
+            }
+            if (timeTable.LecturerId != 0)
+            {
+                existingTimeTable.LecturerId = timeTable.LecturerId;
+            }
+            if (timeTable.CampusId != 0)
+            {
+                existingTimeTable.CampusId = timeTable.CampusId;
+            }
+            await _context.SaveChangesAsync();
             return NoContent();
         }
         catch (Exception e)
@@ -94,16 +104,28 @@ public class TimeTableController : ControllerBase
     }
     
     [HttpDelete("{id}")]
-    public ActionResult DeleteTimeTable(int id)
+    public async Task<ActionResult> DeleteTimeTable(int id)
     {
         try
         {
-            TimeTableProvider.DeleteTimeTable(_context, id);
+            var timeTable = await _context.TimeTables.FindAsync(id);
+            if (timeTable == null)
+            {
+                throw new Exception("TimeTable not found");
+            }
+            _context.TimeTables.Remove(timeTable);
+            await _context.SaveChangesAsync();
             return NoContent();
         }
         catch (Exception e)
         {
             return StatusCode(500, $"Internal server error");
         }
+    }
+
+    [HttpPost("generate")]
+    public async Task<IActionResult> Generate()
+    {
+        return Ok();
     }
 }
