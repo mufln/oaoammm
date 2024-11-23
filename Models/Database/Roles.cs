@@ -3,5 +3,6 @@ namespace hihihiha.Models;
 public enum Roles
 {
     Admin,
-    Student
+    Student,
+    Lecturer,
 }

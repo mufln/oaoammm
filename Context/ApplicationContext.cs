@@ -1,4 +1,5 @@
 using hihihiha.Models;
+using hihihiha.Routers;
 using Microsoft.EntityFrameworkCore;
 
 namespace hihihiha.Context;
@@ -14,6 +15,7 @@ public class ApplicationContext: DbContext
     public required DbSet<TimeTable> TimeTables { get; set; }
     public required DbSet<Room> Rooms { get; set; }
     public required DbSet<Performance> Performances { get; set; }
+    public required DbSet<Affiliate> Affiliates { get; set; }
 
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
