@@ -43,7 +43,7 @@ public class LecturerController : ControllerBase
     {
         try
         {
-            lecturer.Classes = await _context.Classes.Include(c => c.Groups).Where(c => lecturer.ClassesId.Contains(c.Id)).ToListAsync();
+            lecturer.Classes = await _context.Classes.Where(c => lecturer.ClassesId.Contains(c.SpecialtyId)).ToListAsync();
             lecturer.User = await _context.Users.FirstOrDefaultAsync(u => u.Id == lecturer.UserId);
             await _context.Lecturers.AddAsync(lecturer);
             await _context.SaveChangesAsync();

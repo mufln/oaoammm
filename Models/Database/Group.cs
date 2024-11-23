@@ -10,6 +10,7 @@ public class Group
     public required string Name { get; set; }
     public int InstitutId { get; set; }
     public Institut? Institut { get; set; }
-    public int specialtyId { get; set; }
+    public int SpecialtyId { get; set; }
     public Specialty? Specialty { get; set; }
+    public int Course { get; set; }
 }

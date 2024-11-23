@@ -21,7 +21,7 @@ public class ClassController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<Models.Class>>> GetAllClasses()
     {        
-        var classes = await _context.Classes.Include(c => c.Groups).ToListAsync();
+        var classes = await _context.Classes.Include(c => c.Specialty).ToListAsync();
         return Ok(classes);
     }
     
@@ -29,7 +29,7 @@ public class ClassController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Models.Class>> GetClassById(int id)
     {
-        var theClass = await _context.Classes.Include(c => c.Groups).FirstOrDefaultAsync(c => c.Id == id);
+        var theClass = await _context.Classes.Include(c => c.Specialty).FirstOrDefaultAsync(c => c.Id == id);
         if (theClass == null)
         {
             return NotFound();
@@ -42,7 +42,7 @@ public class ClassController : ControllerBase
     [HttpGet("group/{id}")]
     public async Task<ActionResult<List<Models.Class>>> GetClassesByGroupId(int id)
     {
-        var classes = await _context.Classes.Where(c => c.Groups.Any(g => g.Id == id)).ToListAsync();
+        var classes = await _context.Classes.Where(c => _context.Groups.Any(g => g.SpecialtyId == c.SpecialtyId)).ToListAsync();
         if (classes.Count == 0)
         {
             return NotFound();
@@ -57,7 +57,6 @@ public class ClassController : ControllerBase
     {
         try
         {
-            newClass.Groups = await _context.Groups.Where(g => newClass.GroupsId.Contains(g.Id)).ToListAsync();
             await _context.Classes.AddAsync(newClass);
             await _context.SaveChangesAsync();
             return Created();
@@ -75,7 +74,7 @@ public class ClassController : ControllerBase
         try
         {
             newClass.Id = id;
-            var existingClass = await _context.Classes.Include(c => c.Groups).FirstOrDefaultAsync(c => c.Id == id);
+            var existingClass = await _context.Classes.Include(c => c.Specialty).FirstOrDefaultAsync(c => c.Id == id);
             if (existingClass == null)
             {
                 return NotFound();
@@ -95,9 +94,9 @@ public class ClassController : ControllerBase
                 existingClass.Terms = newClass.Terms;
             }
 
-            if (newClass.Groups.Count > 0)
+            if (newClass.SpecialtyId != 0)
             {
-                existingClass.Groups = newClass.Groups;
+                existingClass.Specialty = newClass.Specialty;
             }
 
             await _context.SaveChangesAsync();
@@ -115,7 +114,7 @@ public class ClassController : ControllerBase
     {
         try
         {
-            var newClass = _context.Classes.Include(c => c.Groups).FirstOrDefault(c => c.Id == id);
+            var newClass = _context.Classes.Include(c => c.Specialty).FirstOrDefault(c => c.Id == id);
             if (newClass != null)
             {
                 _context.Classes.Remove(newClass);
