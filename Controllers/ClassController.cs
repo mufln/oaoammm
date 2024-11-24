@@ -7,7 +7,7 @@ namespace hihihiha.Routers;
 
 [ApiController]
 [Route("subjects")]
-[Authorize(Roles = "0")]
+[Authorize(Roles = "Admin")]
 public class ClassController : ControllerBase
 {
     private readonly ApplicationContext _context;    

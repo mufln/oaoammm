@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace hihihiha.Controllers;
 
 [ApiController]
-[Authorize(Roles = "0")]
+[Authorize(Roles = "Admin")]
 [Route("specialty")]
 public class SpecialtyController : ControllerBase
 {

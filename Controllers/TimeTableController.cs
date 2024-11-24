@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace hihihiha.Controllers;
 
 [ApiController]
-[Authorize(Roles = "0")]
+[Authorize(Roles = "Admin")]
 [Route("timetable")]
 public class TimeTableController : ControllerBase
 {

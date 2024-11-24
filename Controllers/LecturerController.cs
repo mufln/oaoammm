@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace hihihiha.Routers;
 
 [ApiController]
-[Authorize(Roles = "0")]
+[Authorize(Roles = "Admin")]
 
 [Route("lecturers")]
 public class LecturerController : ControllerBase

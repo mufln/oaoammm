@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace hihihiha.Routers;
 
 [ApiController]
-[Authorize(Roles = "0,1")]
+[Authorize(Roles = "Admin, Lecturer")]
 [Route("performances")]
 public class PerformanceController : ControllerBase
 {

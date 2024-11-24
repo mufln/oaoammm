@@ -20,9 +20,49 @@ public class ApplicationContext: DbContext
     public required DbSet<Specialty> Specialty { get; set; }
     public required DbSet<Elective> Electives { get; set; }
     public required DbSet<ElectiveMembers> ElectiveMembers { get; set; }
-
+    public required DbSet<Gpa> Gpas { get; set; }
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
         Database.EnsureCreated();
+        if (!Users.Any())
+        {
+            Affiliates.Add(new Affiliate
+            {
+                Id = 1,
+                Name = "Филиал 1"
+            });
+            Instituts.Add(new Institut
+            {
+                Id = 1,
+                Name = "Институт 1",
+                AffiliationId = 1
+            });
+            Specialty.Add(new Specialty
+            {
+                Id = 1,
+                Name = "Администратор",
+                InstitutId = 1
+            });
+            Groups.Add(new Group
+                {
+                    Id = 1,
+                    Name = "Администрация",
+                    InstitutId = 1,
+                    SpecialtyId = 1,
+                    Course = 0
+                });
+            Users.Add(new User
+            {
+                Id = 1,
+                Name = "Admin",
+                Email = "admin@admin.com",
+                Login = "admin",
+                Password = "admin",
+                Phone = "+380505555555",
+                GroupId = 1,
+                Role = 0
+            });
+            SaveChanges();
+        }
     }
 }

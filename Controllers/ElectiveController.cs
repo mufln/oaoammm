@@ -10,6 +10,7 @@ namespace hihihiha.Controllers;
 
 [ApiController]
 [Route("electives")]
+[Authorize(Roles = "Admin")]
 public class ElectiveController : ControllerBase
 {
     private readonly ApplicationContext _context;
