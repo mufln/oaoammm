@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using hihihiha.Models;
 using hihihiha.Context;
 using hihihiha.Routers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace hihihiha.Controllers;
 
 [ApiController]
+[Authorize(Roles = "0")]
 [Route("timetable")]
 public class TimeTableController : ControllerBase
 {

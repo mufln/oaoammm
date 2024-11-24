@@ -1,4 +1,5 @@
 using hihihiha.Context;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,6 +7,7 @@ namespace hihihiha.Routers;
 
 [ApiController]
 [Route("subjects")]
+[Authorize(Roles = "0")]
 public class ClassController : ControllerBase
 {
     private readonly ApplicationContext _context;    

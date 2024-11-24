@@ -1,11 +1,13 @@
 using hihihiha.Context;
 using hihihiha.Models.Database;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace hihihiha.Controllers;
 
 [ApiController]
+[Authorize(Roles = "0")]
 [Route("specialty")]
 public class SpecialtyController : ControllerBase
 {

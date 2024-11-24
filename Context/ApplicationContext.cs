@@ -18,6 +18,8 @@ public class ApplicationContext: DbContext
     public required DbSet<Performance> Performances { get; set; }
     public required DbSet<Affiliate> Affiliates { get; set; }
     public required DbSet<Specialty> Specialty { get; set; }
+    public required DbSet<Elective> Electives { get; set; }
+    public required DbSet<ElectiveMembers> ElectiveMembers { get; set; }
 
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {

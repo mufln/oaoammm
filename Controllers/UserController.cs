@@ -1,9 +1,11 @@
 using hihihiha.Context;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace hihihiha.Routers;
 [ApiController]
+[Authorize(Roles = "0")]
 [Route("users")]
 public class UserController : ControllerBase
 {

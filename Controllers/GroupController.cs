@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using hihihiha.Models; 
 using hihihiha.Context;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace hihihiha.Routers;
 
 [ApiController]
+[Authorize(Roles = "0")]
 [Route("groups")]
 public class GroupsController : ControllerBase
 {

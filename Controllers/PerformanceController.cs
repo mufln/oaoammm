@@ -2,12 +2,14 @@ using hihihiha.Context;
 using hihihiha.Models;
 using hihihiha.Models.Get;
 using hihihiha.Models.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace hihihiha.Routers;
 
 [ApiController]
+[Authorize(Roles = "0,1")]
 [Route("performances")]
 public class PerformanceController : ControllerBase
 {
