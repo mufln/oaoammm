@@ -18,9 +18,11 @@ public class TimeTableController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<TimeTable>>> GetAllTimeTables()
+    public async Task<ActionResult<List<IGrouping<int, TimeTable>>>> GetAllTimeTables(int from, int to)
     {
-        var timeTables = await _context.TimeTables.ToListAsync();
+        var timeTables = await _context.TimeTables
+            .GroupBy(t => t.Day)
+            .ToListAsync();
         return Ok(timeTables);
     }
 
