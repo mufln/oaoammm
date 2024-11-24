@@ -19,13 +19,13 @@ public class PerformanceController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Models.Performance>>> GetAllPerformances()
+    public async Task<ActionResult<List<Performance>>> GetAllPerformances()
     {
-        return await _context.Performances.ToListAsync();
+        return await _context.Performances.Include(p => p.TimeTable).Include(p => p.User).ToListAsync();
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Models.Performance>> GetPerformanceById(int id)
+    public async Task<ActionResult<Performance>> GetPerformanceById(int id)
     {
         var res = await _context.Performances.FindAsync(id);
         if (res == null)
@@ -43,7 +43,7 @@ public class PerformanceController : ControllerBase
         {
             var newPerformance = new Performance
             {
-                TimeTableId = performance.TimeTableId, UserId = performance.UserId, Week = performance.Week,
+                TimeTableId = performance.TimeTableId, UserId = performance.UserId, 
                 Points = performance.Points, Attendance = performance.Attendance
             };
             await _context.Performances.AddAsync(newPerformance);
@@ -52,6 +52,7 @@ public class PerformanceController : ControllerBase
         }
         catch (Exception e)
         {
+            Console.WriteLine(e);
             return StatusCode(500, $"Internal server error");
         }
     }
@@ -68,6 +69,7 @@ public class PerformanceController : ControllerBase
         }
         catch (Exception e)
         {
+            Console.WriteLine(e);
             return StatusCode(500, $"Internal server error");
         }
     }
@@ -98,7 +100,9 @@ public class PerformanceController : ControllerBase
     {
         try
         {
-            var performances = _context.Performances.AsQueryable();
+            var performances = _context.Performances
+                .Include(p => p.TimeTable)
+                .Include(p => p.User).AsQueryable();
             if (request.ClassId != null)
             {
                 performances = performances.Where(p => p.TimeTable.ClassId == request.ClassId);
@@ -111,7 +115,7 @@ public class PerformanceController : ControllerBase
 
             if (request.Week != null)
             {
-                performances = performances.Where(p => p.Week == request.Week);
+                performances = performances.Where(p => p.TimeTable.Week == request.Week);
             }
 
             if (request.GroupId != null)
