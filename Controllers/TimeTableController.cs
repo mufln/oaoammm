@@ -135,30 +135,29 @@ public class TimeTableController : ControllerBase
     [HttpPost("generate")]
     public async Task<IActionResult> Generate()
     {
-        // List<Institut> institutes = _context.Instituts.ToList();
-        // List<Campus> campuses = _context.Campus.ToList();
-        // List<Models.Group> groups = _context.Groups.ToList();
-        // List<Lecturer> lecturers = _context.Lecturers.ToList();
-        // List<Class> classes = _context.Classes.ToList();
-        // List<Room> rooms = _context.Rooms.ToList();
-        List<Affiliate> affiliates = _context.Affiliates.ToList();
+        // List<Institut> institutes = _context.Instituts.ToListAsync();
+        // List<Campus> campuses = _context.Campus.ToListAsync();
+        // List<Models.Group> groups = _context.Groups.ToListAsync();
+        // List<Lecturer> lecturers = _context.Lecturers.ToListAsync();
+        // List<Class> classes = _context.Classes.ToListAsync();
+        // List<Room> rooms = _context.Rooms.ToListAsync();
+        _context.TimeTables.RemoveRange(_context.TimeTables);
+        List<Affiliate> affiliates = await _context.Affiliates.ToListAsync();
         // List<List<TimeTable>> timeTablesByAffiliate = new List<List<TimeTable>>();
         for (int i = 0; i < affiliates.Count; i++)
         {
             int affiliationId = affiliates[i].Id;
             // var affiliateTimeTables = new RedBlackTree<TimeTable>();
-            var affiliationCampuses = _context.Campus
-                .Where(c => c.AffiliationId == affiliationId).ToList();
-            var affiliationInstitutes = _context.Instituts.Include(institut => institut.Affiliation)
-                .Where(institut => institut.AffiliationId == affiliationId).ToList();
-            var affiliationGroups = _context.Groups
-                .Where(g => affiliationInstitutes.Any(institut => institut.Id == g.InstitutId)).ToList();
-            var affiliationLecturers = _context.Lecturers
-                .Where(l => affiliationInstitutes.Any(institut => institut.Id == l.InstitutionId)).ToList();
-            // var affiliationClasses = _context.Classes.Include(c => c.Specialty)
-                // .Where(c => affiliationInstitutes.Any(i => i.Id == c.Specialty.InstitutId)).ToList();
-            var affiliationRooms = _context.Rooms.Include(r => r.Campus)
-                .Where(r => affiliationCampuses.Any(c => c.Id == r.CampusId)).ToList();
+            var affiliationCampuses = await _context.Campus
+                .Where(c => c.AffiliationId == affiliationId).ToListAsync();
+            var affiliationInstitutes = await _context.Instituts.Include(institut => institut.Affiliation)
+                .Where(institut => institut.AffiliationId == affiliationId).ToListAsync();
+            var affiliationGroups = (await _context.Groups.ToListAsync())
+                .Where(g => affiliationInstitutes.Any(institut => institut.Id == g.InstitutId));
+            var affiliationLecturers = (await _context.Lecturers.ToListAsync())
+                .Where(l => affiliationInstitutes.Any(institut => institut.Id == l.InstitutionId));
+            var affiliationRooms = (await _context.Rooms.Include(r => r.Campus).ToListAsync())
+                .Where(r => affiliationCampuses.Any(c => c.Id == r.CampusId));
             Dictionary<Tuple<int, int>, int> targetGroupClassHoursPerWeek = new Dictionary<Tuple<int, int>, int>();
             foreach (Group group in affiliationGroups)
             {
@@ -166,15 +165,21 @@ public class TimeTableController : ControllerBase
                 foreach (Class groupClass in groupClasses)
                 {
                     targetGroupClassHoursPerWeek[new Tuple<int, int>(group.Id, groupClass.Id)] =
-                        groupClass.Hours / groupClass.Terms.Length;
+                        groupClass.Hours / (groupClass.Terms.Length*16);
                 }
             }
 
             foreach (Room room in affiliationRooms)
             {
+                Console.WriteLine($"Processing room {room.Id}");
                 for (int week = 0; week < 16; week++)
                 {
+                    Console.WriteLine($"Processing week {week}");
                     Dictionary<int, int> lecturerHoursPerWeek = new Dictionary<int, int>();
+                    foreach (Lecturer lecturer in affiliationLecturers)
+                    {
+                        lecturerHoursPerWeek[lecturer.Id] = 0;
+                    }
                     Dictionary<Tuple<int, int>, int> groupClassHoursPerWeek = new Dictionary<Tuple<int, int>, int>();
                     foreach (Group group in affiliationGroups)
                     {
@@ -188,30 +193,41 @@ public class TimeTableController : ControllerBase
 
                     for (int day = 0; day < 6; day++)
                     {
-                        int slot = 0;
-                        while (slot < 7)
+                        Console.WriteLine($"Processing day {day}");
+                        for(int slot = 0; slot < 7; slot++)
                         {
+                            Console.WriteLine($"Processing slot {slot}");
                             Dictionary<int, int> groupShifts = new Dictionary<int, int>();
                             Lecturer? lecturer =
-                                affiliationLecturers.FirstOrDefault(l => l.HoursPerWeek < lecturerHoursPerWeek[l.Id]);
+                                affiliationLecturers.FirstOrDefault(l => l.HoursPerWeek > lecturerHoursPerWeek[l.Id]);
                             if (lecturer == null)
                             {
+                                Console.WriteLine("Lecturer not found");
                                 break;
                             }
 
                             if (lecturer.HoursPerWeek < lecturerHoursPerWeek[lecturer.Id])
                             {
+                                Console.WriteLine("Lecturer has no free time");
                                 continue;
                             }
 
-                            
+
                             var subjects = await _context.Classes
                                 .Where(c => lecturer.ClassesId.Contains(c.SpecialtyId)).ToListAsync();
-                            KeyValuePair<Tuple<int,int>, int> groupClass = groupClassHoursPerWeek.FirstOrDefault(g => g.Value < targetGroupClassHoursPerWeek[g.Key]);
+                            KeyValuePair<Tuple<int, int>, int> groupClass =
+                                groupClassHoursPerWeek.FirstOrDefault(
+                                    g => g.Value < targetGroupClassHoursPerWeek[g.Key]);
+                            if (groupClass.Key == null)
+                            {
+                                Console.WriteLine("Group class not found");
+                                break;
+                            }
                             Class? subject = subjects.FirstOrDefault(s => s.Id == groupClass.Key.Item2);
                             Group? group = affiliationGroups.FirstOrDefault(g => g.Id == groupClass.Key.Item1);
                             if (subject == null || group == null)
                             {
+                                Console.WriteLine("Subject or group not found");
                                 break;
                             }
 
@@ -226,6 +242,12 @@ public class TimeTableController : ControllerBase
                                 if (!groupShifts.ContainsKey(subject.Id))
                                 {
                                     groupShifts.Add(subject.Id, 0);
+                                }
+
+                                if (subject.Hours < week)
+                                {
+                                    Console.WriteLine("Subject time limit exceeded");
+                                    continue;
                                 }
 
                                 int groupShift = groupShifts[subject.Id];
@@ -248,6 +270,12 @@ public class TimeTableController : ControllerBase
 
                             if (subject.SlotType == SlotTypes.Seminar || subject.SlotType == SlotTypes.Lab)
                             {
+                                if (subject.Hours < week)
+                                {
+                                    Console.WriteLine("Subject time limit exceeded");
+                                    continue;
+                                }
+
                                 var timeTable = new TimeTable
                                 {
                                     RoomId = room.Id,
@@ -265,14 +293,12 @@ public class TimeTableController : ControllerBase
                                 groupClassHoursPerWeek[new Tuple<int, int>(group.Id, subject.Id)] += 1;
                             }
                             lecturerHoursPerWeek[lecturer.Id] += 1;
-                            slot++;
                         }
                     }
                 }
             }
         }
-
-
-        return Ok();
+        _context.SaveChanges();
+        return Ok(await _context.TimeTables.Take(100).ToListAsync());
     }
 }

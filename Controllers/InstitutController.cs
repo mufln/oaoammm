@@ -42,7 +42,7 @@ public class InstitutController : ControllerBase
     {
         try
         {
-            var newInstitution = new Models.Institut { Name = institution.Name };
+            var newInstitution = new Models.Institut { Name = institution.Name, AffiliationId = institution.AffiliationId };
             await _context.Instituts.AddAsync(newInstitution);
             await _context.SaveChangesAsync();
             return Created();

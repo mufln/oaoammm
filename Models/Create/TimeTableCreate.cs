@@ -11,4 +11,5 @@ public class TimeTableCreate
     public required int Day { get; set; }
     public required int Slot { get; set; }
     public required SlotTypes SlotType { get; set; }
+    public int AffiliationId { get; set; }
 }

@@ -44,7 +44,7 @@ public class GroupsController : ControllerBase
     {
         try
         {
-            var newGroup = new Models.Group { Name = group.Name, InstitutId = group.InstitutId };
+            var newGroup = new Models.Group { Name = group.Name, InstitutId = group.InstitutId, SpecialtyId = group.SpecialtyId, Course = group.Course };
             await _context.Groups.AddAsync(newGroup);
             await _context.SaveChangesAsync();
             return Created();
