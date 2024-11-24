@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.JavaScript;
 using System.Security.Claims;
 using hihihiha.Context;
 using hihihiha.Models;
@@ -245,10 +246,10 @@ public class ElectiveController : ControllerBase
             {
                 return NotFound();
             }
-
+            var userElectives = await _context.ElectiveMembers.Where(e => e.UserId == user.Id).ToListAsync();
             user.Group = await _context.Groups.Include(g => g.Institut).FirstOrDefaultAsync(g => g.Id == user.GroupId);
             var availableElectives = await _context.Electives.Include(e => e.Affiliation)
-                .Where(e => e.Affiliation.Id == user.Group.Institut.AffiliationId).ToListAsync();
+                .Where(e => e.Affiliation.Id == user.Group.Institut.AffiliationId && !userElectives.Any(m => m.ElectiveId == e.Id)).ToListAsync();
             return Ok(availableElectives);
         }
         catch (Exception e)
