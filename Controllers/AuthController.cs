@@ -16,7 +16,7 @@ public class AuthController : ControllerBase
     {
         _context = context;
     }
-    
+
     [HttpPost]
     [Route("login")]
     [ValidateAntiForgeryToken]
@@ -30,7 +30,7 @@ public class AuthController : ControllerBase
         try
         {
             var user = _context.Users.FirstOrDefault(u => u.Email == login.Email);
-                
+
             if (user == null)
             {
                 return NotFound();
@@ -40,6 +40,7 @@ public class AuthController : ControllerBase
             {
                 return Unauthorized();
             }
+
             await Authenticate(user.Email, user.Role.ToString());
             return Ok();
         }
@@ -62,6 +63,7 @@ public class AuthController : ControllerBase
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
     }
 
+    [HttpPost("logout")]
     private async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
