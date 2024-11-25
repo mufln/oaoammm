@@ -86,6 +86,9 @@ export default function Example({
           <a onClick={() => router.push('/home/panel')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
             Админ-панель
           </a>
+          <a onClick={() => router.push('/home/stud-schedule')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
+            Расписание студента
+          </a>
         </PopoverGroup>
         <AdminProfile/>
       </nav>
