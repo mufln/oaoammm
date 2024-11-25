@@ -77,8 +77,14 @@ export default function Example({
           <a onClick={() => router.push('/home/schedule')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
             Расписание
           </a>
-          <a onClick={() => router.push('/home/score')} className="text-sm/6 font-semibold text-gray-900">
+          <a onClick={() => router.push('/home/score')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
             Успеваемость
+          </a>
+          <a onClick={() => router.push('/home/elective')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
+            Факультативы
+          </a>
+          <a onClick={() => router.push('/home/panel')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
+            Админ-панель
           </a>
         </PopoverGroup>
         <AdminProfile/>
