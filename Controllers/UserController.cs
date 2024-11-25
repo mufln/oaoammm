@@ -2,6 +2,8 @@ using hihihiha.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http.Headers;
+
 
 namespace hihihiha.Routers;
 [ApiController]
@@ -41,6 +43,37 @@ public class UserController : ControllerBase
    [HttpPost]
     public async Task<ActionResult> CreateUser([FromBody] Models.UserCreate user)
     {
+        if (Env.GITLAB_ACCESS_TOKEN != "default" && Env.GITLAB_IP != "default")
+        {
+            try
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Env.GITLAB_ACCESS_TOKEN);
+
+
+                var requestContent = new FormUrlEncodedContent(new[]
+                {
+                    new KeyValuePair<string, string>("email", user.Email),
+                    new KeyValuePair<string, string>("name", user.Name),
+                    new KeyValuePair<string, string>("username", user.Login),
+                    new KeyValuePair<string, string>("password", user.Password)
+                });
+
+                var response = await client.PostAsync(
+                    $"http://{Env.GITLAB_IP}/api/v4/users",
+                    requestContent);
+                if ((int)response.StatusCode != 201)
+                {
+                    return new StatusCodeResult((int)response.StatusCode);
+                }
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Internal server error");
+            }
+        }
+
         try
         {
             var newUser = new Models.User
@@ -55,12 +88,13 @@ public class UserController : ControllerBase
             };
             await _context.Users.AddAsync(newUser);
             await _context.SaveChangesAsync();
-            return Created();
         }
         catch (Exception e)
         {
             return StatusCode(500, $"Internal server error");
         }
+        
+        return Created();
     }
 
     
