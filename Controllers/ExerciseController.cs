@@ -76,6 +76,10 @@ public class ExerciseController : ControllerBase
     {
         try
         {
+            if (Env.GITLAB_ACCESS_TOKEN == "default" || Env.GITLAB_IP == "default")
+            {
+                return StatusCode(500, $"Internal server error");
+            }
             var students = await _context.Users.Where(u => u.GroupId == id).ToListAsync();
             foreach (var student in students)
             {
