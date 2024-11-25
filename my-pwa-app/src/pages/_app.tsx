@@ -1,4 +1,4 @@
-import 'C:/Users/User/Desktop/1C_hack/my-pwa-app/src/app/globals.css'
+import '@/app/globals.css'
 import type { AppProps } from 'next/app'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
