@@ -2,6 +2,7 @@ using hihihiha.Models;
 using hihihiha.Models.Database;
 using hihihiha.Routers;
 using Microsoft.EntityFrameworkCore;
+using Task = hihihiha.Models.Database.Exercise;
 
 namespace hihihiha.Context;
 
@@ -21,6 +22,8 @@ public class ApplicationContext: DbContext
     public required DbSet<Elective> Electives { get; set; }
     public required DbSet<ElectiveMembers> ElectiveMembers { get; set; }
     public required DbSet<Gpa> Gpas { get; set; }
+    public required DbSet<Exercise> Exercises { get; set; }
+    
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
         Database.EnsureCreated();
