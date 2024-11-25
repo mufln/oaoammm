@@ -37,6 +37,7 @@
       - .env
     networks:
       - default
+  
         
 networks:
   default:

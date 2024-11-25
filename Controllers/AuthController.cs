@@ -2,6 +2,7 @@ using System.Security.Claims;
 using hihihiha.Context;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace hihihiha.Routers;
@@ -16,10 +17,10 @@ public class AuthController : ControllerBase
     {
         _context = context;
     }
-    
+
     [HttpPost]
     [Route("login")]
-    [ValidateAntiForgeryToken]
+    // [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login([FromBody] Models.Login login)
     {
         if (login == null)
@@ -30,7 +31,7 @@ public class AuthController : ControllerBase
         try
         {
             var user = _context.Users.FirstOrDefault(u => u.Email == login.Email);
-                
+
             if (user == null)
             {
                 return NotFound();
@@ -40,7 +41,8 @@ public class AuthController : ControllerBase
             {
                 return Unauthorized();
             }
-            await Authenticate(user.Email, user.Role.ToString());
+
+            await Authenticate(user.Id.ToString(), user.Role.ToString());
             return Ok();
         }
         catch (Exception e)
@@ -50,11 +52,11 @@ public class AuthController : ControllerBase
         }
     }
 
-    private async Task Authenticate(string email, string role)
+    private async Task Authenticate(string id, string role)
     {
         var claims = new List<Claim>
         {
-            new Claim(ClaimsIdentity.DefaultNameClaimType, email),
+            new Claim(ClaimsIdentity.DefaultNameClaimType, id),
             new Claim(ClaimTypes.Role, role)
         };
         ClaimsIdentity identity = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType,
@@ -62,6 +64,9 @@ public class AuthController : ControllerBase
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
     }
 
+    [HttpPost]
+    [Authorize]
+    [Route("logout")]
     private async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

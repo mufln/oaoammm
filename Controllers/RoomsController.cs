@@ -1,10 +1,12 @@
 using hihihiha.Context;
-using hihihiha.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace hihihiha.Routers;
 
 [ApiController]
+[Authorize(Roles = "Admin")]
 [Route("rooms")]
 public class RoomsController : ControllerBase
 {
@@ -15,37 +17,36 @@ public class RoomsController : ControllerBase
         _context = context;
     }
     
+    
     [HttpGet]
-    public ActionResult<List<Models.Room>> GetAllRooms()
+    public async Task<ActionResult<List<Models.Room>>> GetAllRooms()
     {
-        var rooms = RoomProvider.GetAllRooms(_context);
+        var rooms = await _context.Rooms.Include(r => r.Campus).ToListAsync();
         return Ok(rooms);
     }
 
+    
     [HttpGet("{id}")]
-    public ActionResult<Models.Room> GetRoomById(int id)
+    public async Task<ActionResult<Models.Room>> GetRoomById(int id)
     {
-        var room = RoomProvider.GetRoomById(_context, id);
+        var room = await _context.Rooms.Include(r => r.Campus).FirstOrDefaultAsync(r => r.Id == id);
         if (room == null)
         {
             return NotFound();
         }
-
         return Ok(room);
     }
 
+    
     [HttpPost]
-    public ActionResult CreateRoom([FromBody] Models.Room room)
+    public async Task<ActionResult> CreateRoom([FromBody] Models.Room room)
     {
-        if (room == null)
-        {
-            return UnprocessableEntity("Room cannot be null.");
-        }
-
         try
         {
-            RoomProvider.CreateRoom(_context, room);
-            return Created("/api/room",  room);
+            room.Campus = await _context.Campus.FirstOrDefaultAsync(c => c.Id == room.CampusId);
+            await _context.Rooms.AddAsync(room);
+            await _context.SaveChangesAsync();
+            return Created();
         }
         catch (Exception e)
         {
@@ -53,13 +54,28 @@ public class RoomsController : ControllerBase
         }
     }
 
+    
     [HttpPut("{id}")]
-    public ActionResult UpdateRoom(int id, [FromBody] Models.Room room)
+    public async Task<ActionResult> UpdateRoom(int id, [FromBody] Models.Room room)
     {
         try
         {
             room.Id = id;
-            RoomProvider.UpdateRoom(_context, room);
+            var existingRoom = await _context.Rooms.Include(r => r.Campus).FirstOrDefaultAsync(r => r.Id == room.Id);
+            if (existingRoom == null)
+            {
+                return NoContent();
+            }            
+            if (!string.IsNullOrEmpty(room.Name))
+            {
+                existingRoom.Name = room.Name;
+            }
+            if (room.CampusId != 0)
+            {
+                existingRoom.CampusId = room.CampusId;
+                existingRoom.Campus = await _context.Campus.FirstOrDefaultAsync(c => c.Id == room.CampusId);
+            }
+            await _context.SaveChangesAsync();
             return NoContent();
         }
         catch (Exception e)
@@ -68,12 +84,18 @@ public class RoomsController : ControllerBase
         }
     }
 
+    
     [HttpDelete("{id}")]
-    public ActionResult DeleteRoom(int id)
+    public async Task<ActionResult> DeleteRoom(int id)
     {
         try
         {
-            RoomProvider.DeleteRoom(_context, id);
+            var room = await _context.Rooms.FindAsync(id);
+            if (room != null)
+            {
+                _context.Rooms.Remove(room);
+                await _context.SaveChangesAsync();
+            }
             return NoContent();
         }
         catch (Exception e)

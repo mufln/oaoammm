@@ -1,11 +1,13 @@
 using hihihiha.Context;
-using hihihiha.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace hihihiha.Routers;
 
 [ApiController]
 [Route("subjects")]
+[Authorize(Roles = "Admin")]
 public class ClassController : ControllerBase
 {
     private readonly ApplicationContext _context;    
@@ -15,17 +17,19 @@ public class ClassController : ControllerBase
         _context = context;
     }
     
+    
     [HttpGet]
-    public ActionResult<List<Models.Class>> GetAllClasses()
+    public async Task<ActionResult<List<Models.Class>>> GetAllClasses()
     {        
-        var classes = ClassProvider.GetAllClasses(_context);
+        var classes = await _context.Classes.Include(c => c.Specialty).ToListAsync();
         return Ok(classes);
     }
     
+    
     [HttpGet("{id}")]
-    public ActionResult<Models.Class> GetClassById(int id)
+    public async Task<ActionResult<Models.Class>> GetClassById(int id)
     {
-        var theClass = ClassProvider.GetClassById(_context, id);
+        var theClass = await _context.Classes.Include(c => c.Specialty).FirstOrDefaultAsync(c => c.Id == id);
         if (theClass == null)
         {
             return NotFound();
@@ -34,10 +38,11 @@ public class ClassController : ControllerBase
         return Ok(theClass);
     }
     
+    
     [HttpGet("group/{id}")]
-    public ActionResult<List<Models.Class>> GetClassesByGroupId(int id)
+    public async Task<ActionResult<List<Models.Class>>> GetClassesByGroupId(int id)
     {
-        var classes = ClassProvider.GetClassesByGroupId(_context, id);
+        var classes = await _context.Classes.Where(c => _context.Groups.Any(g => g.SpecialtyId == c.SpecialtyId)).ToListAsync();
         if (classes.Count == 0)
         {
             return NotFound();
@@ -46,18 +51,15 @@ public class ClassController : ControllerBase
         return Ok(classes);
     }
 
+    
     [HttpPost]
-    public ActionResult CreateClass([FromBody] Models.Class newClass)
+    public async Task<ActionResult> CreateClass([FromBody] Models.Class newClass)
     {
-        if (newClass == null)
-        {
-            return UnprocessableEntity("Subject cannot be null.");
-        }
-
         try
         {
-            ClassProvider.CreateClass(_context, newClass);
-            return Created("/subjects",  newClass);
+            await _context.Classes.AddAsync(newClass);
+            await _context.SaveChangesAsync();
+            return Created();
         }
         catch (Exception e)
         {
@@ -65,13 +67,39 @@ public class ClassController : ControllerBase
         }
     }
 
+    
     [HttpPut("{id}")]
-    public ActionResult UpdateClass([FromBody] Models.Class newClass, int id)
+    public async Task<ActionResult> UpdateClass([FromBody] Models.Class newClass, int id)
     {
         try
         {
             newClass.Id = id;
-            ClassProvider.UpdateClass(_context, newClass);
+            var existingClass = await _context.Classes.Include(c => c.Specialty).FirstOrDefaultAsync(c => c.Id == id);
+            if (existingClass == null)
+            {
+                return NotFound();
+            }
+
+            if (!string.IsNullOrEmpty(newClass.Name))
+            {
+                existingClass.Name = newClass.Name;
+            }
+
+            if (newClass.Hours != 0)
+            {
+                existingClass.Hours = newClass.Hours;
+            }
+            if (newClass.Terms.Length > 0)
+            {
+                existingClass.Terms = newClass.Terms;
+            }
+
+            if (newClass.SpecialtyId != 0)
+            {
+                existingClass.Specialty = newClass.Specialty;
+            }
+
+            await _context.SaveChangesAsync();
             return NoContent();
         }
         catch (Exception e)
@@ -80,12 +108,18 @@ public class ClassController : ControllerBase
         }
     }
     
+    
     [HttpDelete("{id}")]
-    public ActionResult DeleteClass(int id)
+    public async Task<ActionResult> DeleteClass(int id)
     {
         try
         {
-            ClassProvider.DeleteClass(_context, id);
+            var newClass = _context.Classes.Include(c => c.Specialty).FirstOrDefault(c => c.Id == id);
+            if (newClass != null)
+            {
+                _context.Classes.Remove(newClass);
+                await _context.SaveChangesAsync();
+            }
             return NoContent();
         }
         catch (Exception e)

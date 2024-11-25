@@ -2,74 +2,94 @@ using hihihiha.Context;
 using hihihiha.Models;
 using hihihiha.Models.Get;
 using hihihiha.Models.Response;
-using hihihiha.Models.Update;
-using hihihiha.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace hihihiha.Routers;
 
 [ApiController]
+[Authorize(Roles = "Admin, Lecturer")]
 [Route("performances")]
 public class PerformanceController : ControllerBase
 {
     private readonly ApplicationContext _context;
+
     public PerformanceController(ApplicationContext context)
     {
         _context = context;
     }
+
     [HttpGet]
-    public ActionResult<List<Models.Performance>> GetAllPerformances()
+    public async Task<ActionResult<List<Performance>>> GetAllPerformances()
     {
-        var performances = PerformanceProvider.GetAllPerformances(_context);
-        return Ok(performances);
+        return await _context.Performances.Include(p => p.TimeTable).Include(p => p.User).ToListAsync();
     }
+
     [HttpGet("{id}")]
-    public ActionResult<Models.Performance> GetPerformanceById(int id)
+    public async Task<ActionResult<Performance>> GetPerformanceById(int id)
     {
-        var performance = PerformanceProvider.GetPerformanceById(_context, id);
-        return Ok(performance);
-    }
-    [HttpPost]
-    public ActionResult CreatePerformance(Models.PerformanceCreate performance)
-    {
-        if (performance == null)
+        var res = await _context.Performances.FindAsync(id);
+        if (res == null)
         {
-            return UnprocessableEntity("Performance cannot be null.");
+            return NotFound();
         }
-        
+
+        return Ok(res);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> CreatePerformance(PerformanceCreate performance)
+    {
         try
         {
-            PerformanceProvider.CreatePerformance(_context, performance);
+            var newPerformance = new Performance
+            {
+                TimeTableId = performance.TimeTableId, UserId = performance.UserId, 
+                Points = performance.Points, Attendance = performance.Attendance
+            };
+            await _context.Performances.AddAsync(newPerformance);
+            await _context.SaveChangesAsync();
             return Created("/api/performance", performance);
         }
         catch (Exception e)
         {
+            Console.WriteLine(e);
             return StatusCode(500, $"Internal server error");
         }
     }
 
     [HttpPost("{id}")]
-
-    public ActionResult UpdatePerformance(int id, Models.Performance performance)
+    public async Task<ActionResult> UpdatePerformance(int id, Performance performance)
     {
         try
         {
             performance.Id = id;
-            PerformanceProvider.UpdatePerformance(_context, performance);
-            return NoContent();
+            _context.Performances.Update(performance);
+            await _context.SaveChangesAsync();
+            return Ok();
         }
         catch (Exception e)
         {
+            Console.WriteLine(e);
             return StatusCode(500, $"Internal server error");
         }
     }
+
     [HttpDelete("{id}")]
-    public ActionResult DeletePerformance(int id)
+    public async Task<ActionResult> DeletePerformance(int id)
     {
         try
         {
-            PerformanceProvider.DeletePerformance(_context, id);
-            return NoContent();
+            var performance = await _context.Performances.FindAsync(id);
+            if (performance == null)
+            {
+                throw new Exception("Performance not found");
+            }
+
+            _context.Performances.Remove(performance);
+            await _context.SaveChangesAsync();
+            return Ok();
         }
         catch (Exception e)
         {
@@ -82,8 +102,62 @@ public class PerformanceController : ControllerBase
     {
         try
         {
-            var performances = await PerformanceProvider.GetPerformancesFiltered(_context, request);
-            return Ok(performances);
+            var performances = _context.Performances
+                .Include(p => p.TimeTable)
+                .Include(p => p.User).AsQueryable();
+            if (request.ClassId != null)
+            {
+                performances = performances.Where(p => p.TimeTable.ClassId == request.ClassId);
+            }
+
+            if (request.UserId != null)
+            {
+                performances = performances.Where(p => p.UserId == request.UserId);
+            }
+
+            if (request.Week != null)
+            {
+                performances = performances.Where(p => p.TimeTable.Week == request.Week);
+            }
+
+            if (request.GroupId != null)
+            {
+                performances = performances.Where(p => p.TimeTable.Groups.Any(g => g.Id == request.GroupId));
+            }
+
+            if (request.PointsAscending != null)
+            {
+                if (request.PointsAscending == true)
+                {
+                    performances = performances.OrderBy(p => p.Points);
+                }
+                else
+                {
+                    performances = performances.OrderByDescending(p => p.Points);
+                }
+            }
+
+            if (request.AttendanceAscending != null)
+            {
+                if (request.AttendanceAscending == true)
+                {
+                    performances = performances.OrderBy(p => p.Attendance);
+                }
+                else
+                {
+                    performances = performances.OrderByDescending(p => p.Attendance);
+                }
+            }
+
+            var groupedPerformances = performances
+                .GroupBy(entry => entry.User)
+                .Select(g => new UserPerformance
+                {
+                    Average = g.Average(p => p.Points),
+                    Performances = g.ToList(),
+                    User = g.Key
+                });
+            return await groupedPerformances.ToListAsync();
         }
         catch (Exception e)
         {

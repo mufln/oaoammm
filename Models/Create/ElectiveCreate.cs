@@ -2,11 +2,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace hihihiha.Models;
 
-public class Room
+public class ElectiveCreate
 {
-    public int Id { get; set; }
-    [MaxLength(64)]
+    [MaxLength(256)]
     public required string Name { get; set; }
+    public int AffiliationId { get; set; }
     public int CampusId { get; set; }
-    public Campus? Campus { get; set; }
+    [MaxLength(1024)]
+    public string? Description { get; set; }
 }

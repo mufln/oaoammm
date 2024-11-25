@@ -1,10 +1,13 @@
 using hihihiha.Context;
-using hihihiha.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace hihihiha.Routers;
 
 [ApiController]
+[Authorize(Roles = "Admin")]
+
 [Route("lecturers")]
 public class LecturerController : ControllerBase
 {
@@ -15,17 +18,19 @@ public class LecturerController : ControllerBase
         _context = context;
     }   
     
+    
     [HttpGet]
-    public ActionResult<List<Models.Lecturer>> GetAllLecturers()
+    public async Task<ActionResult<List<Models.Lecturer>>> GetAllLecturers()
     {
-        var lecturers = LecturerProvider.GetAllLecturers(_context);
+        var lecturers = await _context.Lecturers.Include(l => l.Classes).Include(l => l.User).ToListAsync();
         return Ok(lecturers);
     }
 
+    
     [HttpGet("{id}")]
-    public ActionResult<Models.Lecturer> GetLecturerById(int id)
+    public async Task<ActionResult<Models.Lecturer>> GetLecturerById(int id)
     {
-        var lecturer = LecturerProvider.GetLecturerById(_context, id);
+        var lecturer = await _context.Lecturers.Include(l => l.Classes).Include(l => l.User).FirstOrDefaultAsync(l => l.Id == id);
         if (lecturer == null)
         {
             return NotFound();
@@ -34,18 +39,17 @@ public class LecturerController : ControllerBase
         return Ok(lecturer);
     }
 
+    
     [HttpPost]
-    public ActionResult CreateLecturer([FromBody] Models.Lecturer lecturer)
+    public async Task<ActionResult> CreateLecturer([FromBody] Models.Lecturer lecturer)
     {
-        if (lecturer == null)
-        {
-            return UnprocessableEntity("Lecturer cannot be null.");
-        }
-
         try
         {
-            LecturerProvider.CreateLecturer(_context, lecturer);
-            return Created("/api/lecturer",  lecturer);
+            lecturer.Classes = await _context.Classes.Where(c => lecturer.ClassesId.Contains(c.SpecialtyId)).ToListAsync();
+            lecturer.User = await _context.Users.FirstOrDefaultAsync(u => u.Id == lecturer.UserId);
+            await _context.Lecturers.AddAsync(lecturer);
+            await _context.SaveChangesAsync();
+            return Created();
         }
         catch (Exception e)
         {
@@ -53,13 +57,27 @@ public class LecturerController : ControllerBase
         }
     }
 
+    
     [HttpPut("{id}")]
-    public ActionResult UpdateLecturer(int id, [FromBody] Models.Lecturer lecturer)
+    public async Task<ActionResult> UpdateLecturer(int id, [FromBody] Models.Lecturer lecturer)
     {
         try
         {
             lecturer.Id = id;
-            LecturerProvider.UpdateLecturer(_context, lecturer);
+            var existingLecturer = await _context.Lecturers.Include(l => l.Classes).Include(l => l.User).FirstOrDefaultAsync(l => l.Id == id);
+            if (existingLecturer == null)
+            {
+                return NotFound();
+            }
+            if (lecturer.UserId != 0)
+            {
+                existingLecturer.UserId = lecturer.UserId;
+            }
+            if (lecturer.Classes != null)
+            {
+                existingLecturer.Classes = lecturer.Classes;
+            }
+            await _context.SaveChangesAsync();
             return NoContent();
         }
         catch (Exception e)
@@ -68,12 +86,18 @@ public class LecturerController : ControllerBase
         }
     }
 
+    
     [HttpDelete("{id}")]
-    public ActionResult DeleteLecturer(int id)
+    public async Task<ActionResult> DeleteLecturer(int id)
     {
         try
         {
-            LecturerProvider.DeleteLecturer(_context, id);
+            var lecturer = await _context.Lecturers.Include(l => l.Classes).Include(l => l.User).FirstOrDefaultAsync(l => l.Id == id);
+            if (lecturer != null)
+            {
+                _context.Lecturers.Remove(lecturer);
+                await _context.SaveChangesAsync();
+            }
             return NoContent();
         }
         catch (Exception e)

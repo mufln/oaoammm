@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
-using hihihiha.Services;
 using hihihiha.Models; 
 using hihihiha.Context;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace hihihiha.Routers;
 
 [ApiController]
+[Authorize(Roles = "Admin")]
 [Route("groups")]
 public class GroupsController : ControllerBase
 {
@@ -16,21 +18,19 @@ public class GroupsController : ControllerBase
         _context = context;
     }
 
-    // Получить все группы
-    // /groups
+    
     [HttpGet]
-    public ActionResult<List<Group>> GetAllGroups()
+    public async Task<ActionResult<List<Group>>> GetAllGroups()
     {
-        var groups = GroupProvider.GetAllGroups(_context);
+        var groups = await _context.Groups.Include(group => group.Institut).ToListAsync();
         return Ok(groups);
     }
-
-    // Получить группу по id
-    // /groups/{id}
+    
+    
     [HttpGet("{id}")]
-    public ActionResult<Group> GetGroupById(int id)
+    public async Task<ActionResult<Group>> GetGroupById(int id)
     {
-        var group = GroupProvider.GetGroupById(_context, id);
+        var group = await _context.Groups.Include(group => group.Institut).FirstOrDefaultAsync(group => group.Id == id);
         if (group == null)
         {
             return NotFound();
@@ -39,20 +39,16 @@ public class GroupsController : ControllerBase
         return Ok(group);
     }
 
-    // Создать группу
-    // /groups
-    [HttpPost]
-    public ActionResult CreateGroup([FromBody] GroupCreate? group)
-    {
-        if (group == null)
-        {
-            return BadRequest("Group cannot be null.");
-        }
 
+    [HttpPost]
+    public async Task<ActionResult> CreateGroup([FromBody] GroupCreate group)
+    {
         try
         {
-            GroupProvider.CreateGroup(_context, group);
-            return Created("/api/group",  group);
+            var newGroup = new Models.Group { Name = group.Name, InstitutId = group.InstitutId, SpecialtyId = group.SpecialtyId, Course = group.Course };
+            await _context.Groups.AddAsync(newGroup);
+            await _context.SaveChangesAsync();
+            return Created();
         }
         catch (Exception e)
         {
@@ -60,15 +56,30 @@ public class GroupsController : ControllerBase
         }
     }
 
-    // Изменить группу по id
-    // /groups/{id}
+    
     [HttpPut("{id}")]
-    public ActionResult UpdateGroup(int id, [FromBody] Group group)
+    public async Task<ActionResult> UpdateGroup(int id, [FromBody] Group group)
     {
         try
         {
             group.Id = id;
-            GroupProvider.UpdateGroup(_context, group);
+            var existingGroup = await _context.Groups.Include(g => g.Institut).FirstOrDefaultAsync(g => g.Id == id);
+            if (existingGroup == null)
+            {
+                return NotFound();
+            }
+
+            if (!string.IsNullOrEmpty(group.Name))
+            {
+                existingGroup.Name = group.Name;
+            }
+
+            if (group.InstitutId != 0)
+            {
+                existingGroup.InstitutId = group.InstitutId;
+            }
+
+            await _context.SaveChangesAsync();
             return NoContent();
         }
         catch (Exception e)
@@ -77,14 +88,18 @@ public class GroupsController : ControllerBase
         }
     }
 
-    // Удалить группу по id
-    // /groups/{id}
+    
     [HttpDelete("{id}")]
-    public ActionResult DeleteGroup(int id)
+    public async Task<ActionResult> DeleteGroup(int id)
     {
         try
         {
-            GroupProvider.DeleteGroup(_context, id);
+            var group = await _context.Groups.Include(g => g.Institut).FirstOrDefaultAsync(g => g.Id == id);
+            if (group != null)
+            {
+                _context.Groups.Remove(group);
+                await _context.SaveChangesAsync();
+            }
             return NoContent();
         }
         catch (Exception e)
