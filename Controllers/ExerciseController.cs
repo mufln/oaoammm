@@ -80,7 +80,7 @@ public class ExerciseController : ControllerBase
             foreach (var student in students)
             {
                 HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "glpat-TsqJMn77zKq5NzWsExuT");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Env.GITLAB_ACCESS_TOKEN);
                 
                 
                 var response = await client.GetAsync($"http://{Env.GITLAB_IP}/api/v4/users?username={student.Login}");
