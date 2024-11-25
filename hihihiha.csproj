@@ -24,6 +24,8 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Npgsql" Version="8.0.5" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
@@ -36,6 +38,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="GitLab\" />
       <Folder Include="Migrations" />
       <Folder Include="Migrations\" />
     </ItemGroup>

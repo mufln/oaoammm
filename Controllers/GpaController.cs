@@ -22,7 +22,7 @@ public class GpaController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> GetGpa()
     {
-        return Ok(await _context.Gpas.ToListAsync());
+        return Ok(await _context.Gpas.Take(1000).ToListAsync());
     }
 
     [HttpPost]
