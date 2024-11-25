@@ -34,6 +34,13 @@ public class ExerciseController : ControllerBase
         return Ok(exercises);
     }
 
+    [HttpGet("student/{id}")]
+    public async Task<ActionResult<IEnumerable<Exercise>>> GetExercisesByStudentId(int id)
+    {
+        var exercises = await _context.Exercises.Where(t => t.StudentId == id).OrderByDescending(exercise => exercise.Id).ToListAsync();
+        return Ok(exercises);
+    }
+    
     // [HttpGet("lecturer/{lecturerId}/group/{groupId}")]
     // public async Task<ActionResult<IEnumerable<Exercise>>> GetGroupExercisesByLecturerId(int lecturerId, int groupId)
     // {
