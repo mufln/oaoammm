@@ -11,6 +11,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+import LoadingBar from "@/components/loading-bar"
+
 const people = [
     {
       name: 'Leslie Alexander',
