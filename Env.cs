@@ -62,4 +62,34 @@ public class Env
             return name;
         }
     }
+
+    public static string GITLAB_ACCESS_TOKEN
+    {
+        get
+        {
+            // токен обязательно должен иметь доступ к api,
+            // генерируется в локальном gitlab от пользователя root
+            String? token = Environment.GetEnvironmentVariable("GITLAB_ACCESS_TOKEN"); 
+            if (token == null)
+            {
+                return "default";
+            }
+
+            return token;
+        }
+    }
+    
+    public static string GITLAB_IP
+    {
+        get
+        {
+            String? ip = Environment.GetEnvironmentVariable("GITLAB_IP"); 
+            if (ip == null)
+            {
+                return "default";
+            }
+
+            return ip;
+        }
+    }
 }
