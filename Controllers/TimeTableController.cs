@@ -289,7 +289,7 @@ public class TimeTableController : ControllerBase
                                     SlotType = subject.SlotType,
                                     LecturerId = lecturer.Id,
                                     ClassId = subject.Id,
-                                    GroupIds = [group.Id],
+                                    GroupIds = new [] {group.Id},
                                     CampusId = affiliationCampuses[0].Id,
                                     AffiliationId = affiliates[i].Id
                                 };
