@@ -118,7 +118,7 @@ export default function Example() {
           </p>
 
           <div className="my-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="flex md:items-center flex-col md:flex-row sm:col-span-4 items-center">
+            <div className="flex md:items-center flex-col md:flex-row sm:col-span-4">
               <div className="">
                 <div className="flex rounded-md shadow-sm ring-1 mr-4 ring-inset ring-gray-300 sm:max-w-md">
                   <span className="flex select-none items-center px-4 text-black sm:text-sm">Институт</span>
@@ -140,7 +140,7 @@ export default function Example() {
               <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
                 <h2 className="font-semibold text-indigo-600">Редактировать институты</h2>
               </label>
-              <div className="flex md:items-center flex-col md:flex-row sm:col-span-4 items-center space-x-2 mt-2">
+              <div className="flex md:items-center flex-col md:flex-row sm:col-span-4 space-x-2 mt-2">
                 <div className="flex flex-col space-y-2">
                   <Combobox 
                   items={institutions}
@@ -194,7 +194,7 @@ export default function Example() {
             </DialogContent>
           </Dialog>
           <div className="my-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="flex md:items-center flex-col md:flex-row sm:col-span-4 items-center">
+            <div className="flex md:items-center flex-col md:flex-row sm:col-span-4">
               <div className="rounded-md ring-1 ring-inset ring-gray-300 px-4 mr-4">
                   <input
                     id="item"
@@ -227,7 +227,7 @@ export default function Example() {
               <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
                 <h2 className="font-semibold text-indigo-600">Редактировать информацию о сотрудниках</h2>
               </label>
-              <div className="flex md:items-center flex-col md:flex-row sm:col-span-4 items-center space-x-2 mt-2">
+              <div className="flex md:items-center flex-col md:flex-row sm:col-span-4 space-x-2 mt-2">
                 <div className="flex flex-col space-y-2">
                 <Combobox 
                   items={workers}
@@ -249,7 +249,7 @@ export default function Example() {
           </p>
 
           <div className="my-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="flex md:items-center flex-col md:flex-row sm:col-span-4 items-center">
+            <div className="flex md:items-center flex-col md:flex-row sm:col-span-4">
               {/* <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
                 <h2 className="font-semibold text-indigo-600">Институты</h2>
               </label> */}
@@ -271,7 +271,7 @@ export default function Example() {
               <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
                 <h2 className="font-semibold text-indigo-600">Редактировать кампусы</h2>
               </label>
-              <div className="flex md:items-center flex-col md:flex-row sm:col-span-4 items-center space-x-2 mt-2">
+              <div className="flex md:items-center flex-col md:flex-row sm:col-span-4 space-x-2 mt-2">
                 <div className="flex flex-col space-y-2">
                 <Combobox 
                   items={campuses}
@@ -291,7 +291,7 @@ export default function Example() {
             Добавить аудитории или редактировать информацию об аудиториях.
           </p>
           <div className="my-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="flex md:items-center flex-col md:flex-row sm:col-span-4 items-center">
+            <div className="flex md:items-center flex-col md:flex-row sm:col-span-4">
               {/* <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
                 <h2 className="font-semibold text-indigo-600">Институты</h2>
               </label> */}
@@ -313,7 +313,7 @@ export default function Example() {
               <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
                 <h2 className="font-semibold text-indigo-600">Редактировать аудитории</h2>
               </label>
-              <div className="flex md:items-center flex-col md:flex-row sm:col-span-4 items-center space-x-2 mt-2">
+              <div className="flex md:items-center flex-col md:flex-row sm:col-span-4 space-x-2 mt-2">
                 <div className="flex flex-col space-y-2">
                 <Combobox 
                   items={classes}
@@ -333,7 +333,7 @@ export default function Example() {
             Добавить дисциплины или редактировать информацию о дисциплинах.
           </p>
           <div className="my-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="flex md:items-center flex-col md:flex-row sm:col-span-4 items-center">
+            <div className="flex md:items-center flex-col md:flex-row sm:col-span-4">
               {/* <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
                 <h2 className="font-semibold text-indigo-600">Институты</h2>
               </label> */}
@@ -355,7 +355,7 @@ export default function Example() {
               <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
                 <h2 className="font-semibold text-indigo-600">Редактировать дисциплины</h2>
               </label>
-              <div className="flex md:items-center flex-col md:flex-row sm:col-span-4 items-center space-x-2 mt-2">
+              <div className="flex md:items-center flex-col md:flex-row sm:col-span-4 space-x-2 mt-2">
                 <div className="flex flex-col space-y-2">
                 <Combobox 
                   items={subjects}
@@ -375,7 +375,7 @@ export default function Example() {
             Добавить группу или редактировать информацию о группе.
           </p>
           <div className="my-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="flex md:items-center flex-col md:flex-row sm:col-span-4 items-center">
+            <div className="flex md:items-center flex-col md:flex-row sm:col-span-4">
               <div className="rounded-md ring-1 ring-inset ring-gray-300 px-4 mr-4">
                   <input
                     id="item"
@@ -394,7 +394,7 @@ export default function Example() {
               <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
                 <h2 className="font-semibold text-indigo-600">Редактировать группы</h2>
               </label>
-              <div className="flex md:items-center flex-col md:flex-row sm:col-span-4 items-center space-x-2 mt-2">
+              <div className="flex md:items-center flex-col md:flex-row sm:col-span-4 space-x-2 mt-2">
                 <div className="flex flex-col space-y-2">
                 <Combobox 
                   items={groups}
