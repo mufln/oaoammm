@@ -126,9 +126,6 @@ export default function Example({
               <a onClick={() => router.push('/home/panel')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
                 Админ-панель
               </a>
-              <a onClick={() => router.push('/home/stud-schedule')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
-                Расписание студента
-              </a>
               </div>
               <div className="py-6">
                 <AdminProfile/>
