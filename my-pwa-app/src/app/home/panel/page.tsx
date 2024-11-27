@@ -95,7 +95,7 @@ export default function Example() {
                 </div>
               </div>
               <Button className="m-4 p-2 bg-indigo-600 text-sm font-bold text-white rounded-lg">
-                Добавить институт
+                Добавить
               </Button>
             </div>
 
@@ -139,7 +139,7 @@ export default function Example() {
               {/* <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
                 <h2 className="font-semibold text-indigo-600">Институты</h2>
               </label> */}
-              <div className="">
+              <div className="rounded-md ring-1 ring-inset ring-gray-300 px-4">
                   <input
                     id="item"
                     name="item"
@@ -149,7 +149,7 @@ export default function Example() {
                   />
               </div>
               <Button className="m-4 p-2 bg-indigo-600 text-sm font-bold text-white rounded-lg">
-                Добавить кампус
+                Добавить
               </Button>
             </div>
 
@@ -191,7 +191,7 @@ export default function Example() {
               {/* <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
                 <h2 className="font-semibold text-indigo-600">Институты</h2>
               </label> */}
-              <div className="">
+              <div className="rounded-md ring-1 ring-inset ring-gray-300 px-4">
                   <input
                     id="item"
                     name="item"
@@ -243,7 +243,7 @@ export default function Example() {
               {/* <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
                 <h2 className="font-semibold text-indigo-600">Институты</h2>
               </label> */}
-              <div className="">
+              <div className="rounded-md ring-1 ring-inset ring-gray-300 px-4">
                   <input
                     id="item"
                     name="item"
@@ -253,7 +253,7 @@ export default function Example() {
                   />
               </div>
               <Button className="m-4 p-2 bg-indigo-600 text-sm font-bold text-white rounded-lg">
-                Добавить дисциплину
+                Добавить
               </Button>
             </div>
 
@@ -295,7 +295,7 @@ export default function Example() {
               {/* <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
                 <h2 className="font-semibold text-indigo-600">Институты</h2>
               </label> */}
-              <div className="">
+              <div className="rounded-md ring-1 ring-inset ring-gray-300 px-4">
                   <input
                     id="item"
                     name="item"
@@ -305,7 +305,7 @@ export default function Example() {
                   />
               </div>
               <Button className="m-4 p-2 bg-indigo-600 text-sm font-bold text-white rounded-lg">
-                Добавить группу
+                Добавить
               </Button>
             </div>
 
