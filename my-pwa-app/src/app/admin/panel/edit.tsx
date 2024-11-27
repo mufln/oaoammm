@@ -57,8 +57,8 @@ export default function Edit({ selectedInstitution, institutions, isWorkers }: E
                 Изменить
               </Button>
             </DialogTrigger>
-            <DialogContent className="w-max">
-              <DialogHeader>
+            <DialogContent className="w-min">
+              <DialogHeader className="col-span-3 md:col-span-4">
                 <DialogTitle>Редактировать</DialogTitle>
                 <DialogDescription>
                   информацию о {institutions[selectedInstitution - 1].name}
@@ -71,7 +71,7 @@ export default function Edit({ selectedInstitution, institutions, isWorkers }: E
                           name="item"
                           type="text"
                           placeholder={institutions[selectedInstitution - 1].name}
-                          className="block w-[320px] flex-1 bg-transparent py-2 px-2 text-gray-500 placeholder:text-gray-400 focus:text-black focus:outline-none border-b-0 focus:border-b-2 focus:border-indigo-600 sm:text-sm/6 w-max"
+                          className="block w-[320px] max-w-full flex-1 bg-transparent py-2 px-2 text-gray-500 placeholder:text-gray-400 focus:text-black focus:outline-none border-b-0 focus:border-b-2 focus:border-indigo-600 sm:text-sm/6 w-max"
                         />
                       </div>
                     {isWorkers ? 
