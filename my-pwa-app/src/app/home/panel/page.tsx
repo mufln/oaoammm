@@ -1,22 +1,20 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
 'use client'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 import { useState } from 'react'
 import { Button } from '@headlessui/react'
-import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
+
+import { Combobox } from "@/components/combobox"
+
+import Edit from "./edit"
 
 const institutions = [
   {id: 1, name: 'Институт информационных технологий'},
@@ -54,15 +52,15 @@ const campuses = [
   {id: 3, name: 'Кампус 3'},
 ]
 
-const fields = [{label: 'Институты', isEditing: false},
-                {label: 'Кампусы', isEditing: false},
-                {label: 'Аудитории', isEditing: false},
-                {label: 'Группы', isEditing: false},
-                {label: 'Дисциплины', isEditing: false},
+const people = [
+  {id: 1, name: 'Сотрудник 1'},
+  {id: 2, name: 'Сотрудник 2'},
+  {id: 3, name: 'Сотрудник 3'},
 ]
 
 export default function Example() {
   const [selectedInstitution, setSelectedInstitution] = useState<number | null>(null)
+  const [ selectedWorker, setSelectedWorker ] = useState<number | null>(null)
   const [ selectedGroup, setSelectedGroup] = useState<number | null>(null)
   const [ selectedSubject, setSelectedSubject] = useState<number | null>(null)
   const [ selectedClass, setSelectedClass] = useState<number | null>(null)
@@ -79,12 +77,9 @@ export default function Example() {
 
           <div className="my-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="flex items-center sm:flex-wrap sm:col-span-4">
-              {/* <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
-                <h2 className="font-semibold text-indigo-600">Институты</h2>
-              </label> */}
               <div className="">
                 <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 sm:max-w-md">
-                  <span className="flex select-none items-center px-4 text-black sm:text-sm">Институт </span>
+                  <span className="flex select-none items-center px-4 text-black sm:text-sm">Институт</span>
                   <input
                     id="item"
                     name="item"
@@ -105,23 +100,71 @@ export default function Example() {
               </label>
               <div className="flex items-center sm:flex-wrap sm:col-span-4 space-x-2 mt-2">
                 <div className="flex flex-col space-y-2">
-                  <Select onValueChange={(value) => setSelectedInstitution(Number(value))}>
-                    <SelectTrigger id="item-select" className="w-[180px] ring-1 ring-zinc-300 ring-inset">
-                      <SelectValue placeholder="Выберите институт" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {institutions.map(item => (
-                        <SelectItem key={item.id} value={item.id.toString()}>{item.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Combobox 
+                  items={institutions}
+                  placeholder="Выберите институт"
+                  onSelect={(value) => setSelectedInstitution(Number(value))}
+                  />
                 </div>
-                <Button className="m-4 p-2 bg-indigo-600 text-sm font-bold text-white rounded-lg">
-                  Изменить
-                </Button>
-                <Button className="m-4 p-2 ring-1 ring-red-500 font-bold text-sm text-red-500 rounded-lg">
-                  Удалить
-                </Button>
+                <Edit selectedInstitution={selectedInstitution} institutions={institutions} isWorkers={false}/>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+
+        <div className="border-b border-gray-900/10 py-12">
+          <h2 className="text-xl font-semibold text-gray-900">Сотрудники</h2>
+          <p className="mt-1 text-sm/6 text-gray-600">
+            Добавить сотрудника или редактировать информацию о сотруднике.
+          </p>
+
+          <div className="my-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+            <div className="flex items-center sm:flex-wrap sm:col-span-4">
+              {/* <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
+                <h2 className="font-semibold text-indigo-600">Институты</h2>
+              </label> */}
+              <div className="rounded-md ring-1 ring-inset ring-gray-300 px-4">
+                  <input
+                    id="item"
+                    name="item"
+                    type="text"
+                    placeholder="Введите ФИО"
+                    className="block flex-1 bg-transparent py-2 text-gray-500 placeholder:text-gray-400 focus:text-black focus:outline-none w-max border-b-0 focus:border-b-2 focus:border-indigo-600 sm:text-sm/6 w-max"
+                  />
+              </div>
+              <Select>
+                <SelectTrigger className="w-[200px] px-0 mx-2">
+                  <SelectValue placeholder="Выберите роль"/>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Выберите роль</SelectLabel>
+                    <SelectItem value="apple">Администратор</SelectItem>
+                    <SelectItem value="banana">Студент</SelectItem>
+                    <SelectItem value="blueberry">Ректор</SelectItem>
+                    <SelectItem value="grapes">Заведующий кафедры</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <Button className="m-4 p-2 bg-indigo-600 text-sm font-bold text-white rounded-lg">
+                Добавить
+              </Button>
+            </div>
+
+            <div className="flex flex-col sm:col-span-4">
+              <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
+                <h2 className="font-semibold text-indigo-600">Редактировать информацию о сотрудниках</h2>
+              </label>
+              <div className="flex items-center sm:flex-wrap sm:col-span-4 space-x-2 mt-2">
+                <div className="flex flex-col space-y-2">
+                <Combobox 
+                  items={people}
+                  placeholder="Выберите сотрудника"
+                  onSelect={(value) => setSelectedWorker(Number(value))}
+                  />
+                </div>
+                <Edit selectedInstitution={selectedWorker} institutions={people} isWorkers={true}/>
               </div>
               
             </div>
@@ -159,23 +202,13 @@ export default function Example() {
               </label>
               <div className="flex items-center sm:flex-wrap sm:col-span-4 space-x-2 mt-2">
                 <div className="flex flex-col space-y-2">
-                  <Select onValueChange={(value) => setSelectedCampus(Number(value))}>
-                    <SelectTrigger id="item-select" className="w-[180px] ring-1 ring-zinc-300 ring-inset">
-                      <SelectValue placeholder="Выберите аудиторию" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {campuses.map(item => (
-                        <SelectItem key={item.id} value={item.id.toString()}>{item.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <Combobox 
+                  items={campuses}
+                  placeholder="Выберите кампус"
+                  onSelect={(value) => setSelectedCampus(Number(value))}
+                  />
                 </div>
-                <Button className="m-4 p-2 bg-indigo-600 text-sm font-bold text-white rounded-lg">
-                  Изменить
-                </Button>
-                <Button className="m-4 p-2 ring-1 ring-red-500 font-bold text-sm text-red-500 rounded-lg">
-                  Удалить
-                </Button>
+                <Edit selectedInstitution={selectedCampus} institutions={campuses} isWorkers={false}/>
               </div>
             </div>
           </div>
@@ -211,23 +244,13 @@ export default function Example() {
               </label>
               <div className="flex items-center sm:flex-wrap sm:col-span-4 space-x-2 mt-2">
                 <div className="flex flex-col space-y-2">
-                  <Select onValueChange={(value) => setSelectedClass(Number(value))}>
-                    <SelectTrigger id="item-select" className="w-[180px] ring-1 ring-zinc-300 ring-inset">
-                      <SelectValue placeholder="Выберите аудиторию" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {classes.map(item => (
-                        <SelectItem key={item.id} value={item.id.toString()}>{item.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <Combobox 
+                  items={classes}
+                  placeholder="Выберите аудиторию"
+                  onSelect={(value) => setSelectedClass(Number(value))}
+                />
                 </div>
-                <Button className="m-4 p-2 bg-indigo-600 text-sm font-bold text-white rounded-lg">
-                  Изменить
-                </Button>
-                <Button className="m-4 p-2 ring-1 ring-red-500 font-bold text-sm text-red-500 rounded-lg">
-                  Удалить
-                </Button>
+                <Edit selectedInstitution={selectedClass} institutions={classes} isWorkers={false}/>
               </div>
             </div>
           </div>
@@ -263,23 +286,13 @@ export default function Example() {
               </label>
               <div className="flex items-center sm:flex-wrap sm:col-span-4 space-x-2 mt-2">
                 <div className="flex flex-col space-y-2">
-                  <Select onValueChange={(value) => setSelectedSubject(Number(value))}>
-                    <SelectTrigger id="item-select" className="w-[180px] ring-1 ring-zinc-300 ring-inset">
-                      <SelectValue placeholder="Выберите дисциплину" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {subjects.map(item => (
-                        <SelectItem key={item.id} value={item.id.toString()}>{item.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <Combobox 
+                  items={subjects}
+                  placeholder="Выберите дисциплину"
+                  onSelect={(value) => setSelectedSubject(Number(value))}
+                  />
                 </div>
-                <Button className="m-4 p-2 bg-indigo-600 text-sm font-bold text-white rounded-lg">
-                  Изменить
-                </Button>
-                <Button className="m-4 p-2 ring-1 ring-red-500 font-bold text-sm text-red-500 rounded-lg">
-                  Удалить
-                </Button>
+                <Edit selectedInstitution={selectedSubject} institutions={subjects} isWorkers={false}/>
               </div>
             </div>
           </div>
@@ -292,9 +305,6 @@ export default function Example() {
           </p>
           <div className="my-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="flex items-center sm:flex-wrap sm:col-span-4">
-              {/* <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
-                <h2 className="font-semibold text-indigo-600">Институты</h2>
-              </label> */}
               <div className="rounded-md ring-1 ring-inset ring-gray-300 px-4">
                   <input
                     id="item"
@@ -315,23 +325,13 @@ export default function Example() {
               </label>
               <div className="flex items-center sm:flex-wrap sm:col-span-4 space-x-2 mt-2">
                 <div className="flex flex-col space-y-2">
-                  <Select onValueChange={(value) => setSelectedGroup(Number(value))}>
-                    <SelectTrigger id="item-select" className="w-[180px] ring-1 ring-zinc-300 ring-inset">
-                      <SelectValue placeholder="Выберите группу" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {groups.map(item => (
-                        <SelectItem key={item.id} value={item.id.toString()}>{item.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <Combobox 
+                  items={groups}
+                  placeholder="Выберите группу"
+                  onSelect={(value) => setSelectedGroup(Number(value))}
+                  />
                 </div>
-                <Button className="m-4 p-2 bg-indigo-600 text-sm font-bold text-white rounded-lg">
-                  Изменить
-                </Button>
-                <Button className="m-4 p-2 ring-1 ring-red-500 font-bold text-sm text-red-500 rounded-lg">
-                  Удалить
-                </Button>
+                <Edit selectedInstitution={selectedGroup} institutions={groups} isWorkers={false}/>
               </div>
             </div>
           </div>
