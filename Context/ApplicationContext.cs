@@ -31,24 +31,24 @@ public class ApplicationContext: DbContext
         {
             Affiliates.Add(new Affiliate
             {
-                Id = 0,
+                Id = 1,
                 Name = "Филиал 1"
             });
             Instituts.Add(new Institut
             {
-                Id = 0,
+                Id = 1,
                 Name = "Институт 1",
                 AffiliationId = 1
             });
             Specialty.Add(new Specialty
             {
-                Id = 0,
+                Id = 1,
                 Name = "Администратор",
                 InstitutId = 1
             });
             Groups.Add(new Group
                 {
-                    Id = 0,
+                    Id = 1,
                     Name = "Администрация",
                     InstitutId = 1,
                     SpecialtyId = 1,
@@ -56,7 +56,7 @@ public class ApplicationContext: DbContext
                 });
             Users.Add(new User
             {
-                Id = 0,
+                Id = 1,
                 Name = "Admin",
                 Email = "admin@admin.com",
                 Login = "admin",
