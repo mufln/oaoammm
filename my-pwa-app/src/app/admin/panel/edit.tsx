@@ -50,10 +50,10 @@ export default function Edit({ selectedInstitution, institutions, isWorkers }: E
   return (
     <>
       {selectedInstitution !== null ? (
-        <div>
+        <div className='flex flex-row items-center'>
           <Dialog>
             <DialogTrigger asChild>
-              <Button className="mr-2 p-2 bg-indigo-600 text-sm font-bold text-white rounded-lg">
+              <Button className="mr-2 p-2 bg-indigo-600 text-sm font-bold text-white rounded-lg max-h-[40px]">
                 Изменить
               </Button>
             </DialogTrigger>
@@ -103,8 +103,8 @@ export default function Edit({ selectedInstitution, institutions, isWorkers }: E
           </Button>
         </div>
       ) : (
-        <div>
-          <Button className="mr-2 p-2 bg-gray-400 text-sm font-bold text-white rounded-lg" disabled>
+        <div className='flex flex-row items-center'>
+          <Button className="mr-2 p-2 bg-gray-400 text-sm font-bold text-white rounded-lg max-h-[40px]" disabled>
             Изменить
           </Button>
           <Button className="m-2 p-2 ring-1 ring-gray-500 font-bold text-sm text-gray-500 rounded-lg" disabled>
