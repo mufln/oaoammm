@@ -1,14 +1,18 @@
 using System.Security.Claims;
 using hihihiha.Context;
+using hihihiha.Models;
+using hihihiha.Models.Database;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace hihihiha.Routers;
 
 [ApiController]
 [Route("auth")]
+// [EnableCors("oaoammm")]
 public class AuthController : ControllerBase
 {
     private readonly ApplicationContext _context;
@@ -23,6 +27,46 @@ public class AuthController : ControllerBase
     // [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login([FromBody] Models.Login login)
     {
+        if (!_context.Users.Any())
+        {
+            _context.Affiliates.Add(new Affiliate
+            {
+                Name = "Филиал 1"
+            });
+            _context.SaveChanges();
+            _context.Instituts.Add(new Institut
+            {
+                Name = "Институт 1",
+                AffiliationId = 1
+            });
+            _context.SaveChanges();
+            _context.Specialty.Add(new Specialty
+            {
+                Name = "Администратор",
+                InstitutId = 1
+            });
+            _context.SaveChanges();
+            _context.Groups.Add(new Group
+            {
+                Name = "Администрация",
+                InstitutId = 1,
+                SpecialtyId = 1,
+                Course = 0
+            });
+            _context.SaveChanges();
+            _context.Users.Add(new User
+            {
+                Name = "Admin",
+                Email = "admin@admin.com",
+                Login = "admin",
+                Password = "admin",
+                Phone = "+380505555555",
+                GroupId = 1,
+                Role = 0
+            });
+            _context.SaveChanges();
+        }
+
         if (login == null)
         {
             return UnprocessableEntity("Request cannot be null.");
