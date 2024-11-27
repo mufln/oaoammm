@@ -18,5 +18,5 @@ export default function Home() {
       })
     }
   }, [])
-  useRouter().push('/home')
+  useRouter().push('/admin/panel')
 }
