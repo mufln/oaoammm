@@ -11,6 +11,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 
+import { useMemo } from 'react';
+
 const studentInfo = {
     name: "Иванов Иван Иванович",
     login: "ivanov.i.i@edu.mirea.ru",

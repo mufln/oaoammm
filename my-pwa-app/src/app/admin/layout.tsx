@@ -86,6 +86,9 @@ export default function Example({
           <a onClick={() => router.push('/home/panel')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
             Админ-панель
           </a>
+          <a onClick={() => router.push('/home/stud-schedule')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
+            Расписание студента
+          </a>
         </PopoverGroup>
         <AdminProfile/>
       </nav>
@@ -111,50 +114,21 @@ export default function Example({
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
-                <Disclosure as="div" className="-mx-3">
-                  <DisclosureButton className="group flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
-                    Product
-                    <ChevronDownIcon aria-hidden="true" className="size-5 flex-none group-data-[open]:rotate-180" />
-                  </DisclosureButton>
-                  <DisclosurePanel className="mt-2 space-y-2">
-                    {[...products, ...callsToAction].map((item) => (
-                      <DisclosureButton
-                        key={item.name}
-                        as="a"
-                        href={item.href}
-                        className="block rounded-lg py-2 pl-6 pr-3 text-sm/7 font-semibold text-gray-900 hover:bg-gray-50"
-                      >
-                        {item.name}
-                      </DisclosureButton>
-                    ))}
-                  </DisclosurePanel>
-                </Disclosure>
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                >
-                  Features
-                </a>
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                >
-                  Marketplace
-                </a>
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                >
-                  Company
-                </a>
+              <a onClick={() => router.push('/home/schedule')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
+                Расписание
+              </a>
+              <a onClick={() => router.push('/home/score')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
+                Успеваемость
+              </a>
+              <a onClick={() => router.push('/home/elective')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
+                Факультативы
+              </a>
+              <a onClick={() => router.push('/home/panel')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
+                Админ-панель
+              </a>
               </div>
               <div className="py-6">
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                >
-                  Профиль
-                </a>
+                <AdminProfile/>
               </div>
             </div>
           </div>
