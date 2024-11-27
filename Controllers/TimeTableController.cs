@@ -311,6 +311,10 @@ public class TimeTableController : ControllerBase
     {
         var timeTables = await _context.TimeTables
             .Where(t => t.GroupIds.Contains(id))
+            .Include(t => t.Lecturer.User)
+            .Include(t => t.Room)
+            .Include(t => t.Campus)
+            .Include(t => t.Class)
             .ToListAsync();
         return Ok(timeTables);
     }
