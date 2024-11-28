@@ -8,15 +8,7 @@ class Program
     static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        builder.Services.AddCors(options =>
-        {
-             options.AddPolicy(name: "oaoammm",
-                 policy  =>
-                 {
-                     policy.WithOrigins("http://localhost:3001/",
-                         "http://localhost:3000/", "http://localhost").AllowAnyMethod();
-                 });
-        });
+       
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddDbContext<ApplicationContext>(opts => opts.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -32,7 +24,15 @@ class Program
             {
                 options.LoginPath = "/Auth";
             });
-        
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(name: "oaoammm",
+                policy  =>
+                {
+                    policy.WithOrigins("http://localhost:3001",
+                        "http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+                });
+        });
         var app = builder.Build();
         if (app.Environment.IsDevelopment())
         {
