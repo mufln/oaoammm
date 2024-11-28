@@ -12,7 +12,7 @@ using hihihiha.Context;
 namespace hihihiha.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20241128084228_Init")]
+    [Migration("20241128085617_Init")]
     partial class Init
     {
         /// <inheritdoc />
