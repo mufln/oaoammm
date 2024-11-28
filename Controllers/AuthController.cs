@@ -12,7 +12,7 @@ namespace hihihiha.Routers;
 
 [ApiController]
 [Route("auth")]
-// [EnableCors("oaoammm")]
+[EnableCors("oaoammm")]
 public class AuthController : ControllerBase
 {
     private readonly ApplicationContext _context;

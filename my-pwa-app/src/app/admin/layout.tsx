@@ -74,20 +74,23 @@ export default function Example({
         </div>
         <PopoverGroup className="hidden lg:flex lg:gap-x-12">
 
-          <a onClick={() => router.push('/home/schedule')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
+          <a onClick={() => router.push('/admin/schedule')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
             Расписание
           </a>
-          <a onClick={() => router.push('/home/score')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
+          <a onClick={() => router.push('/admin/score')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
             Успеваемость
           </a>
-          <a onClick={() => router.push('/home/elective')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
+          <a onClick={() => router.push('/student/elective')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
             Факультативы
           </a>
-          <a onClick={() => router.push('/home/panel')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
+          <a onClick={() => router.push('/admin/panel')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
             Админ-панель
           </a>
-          <a onClick={() => router.push('/home/stud-schedule')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
+          <a onClick={() => router.push('/student/stud-schedule')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
             Расписание студента
+          </a>
+          <a onClick={() => router.push('/admin/editable-score')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
+            Ред. успеваемость
           </a>
         </PopoverGroup>
         <AdminProfile/>
@@ -114,16 +117,16 @@ export default function Example({
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
-              <a onClick={() => router.push('/home/schedule')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
+              <a onClick={() => router.push('/admin/schedule')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
                 Расписание
               </a>
-              <a onClick={() => router.push('/home/score')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
+              <a onClick={() => router.push('/admin/score')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
                 Успеваемость
               </a>
-              <a onClick={() => router.push('/home/elective')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
+              <a onClick={() => router.push('/student/elective')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
                 Факультативы
               </a>
-              <a onClick={() => router.push('/home/panel')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
+              <a onClick={() => router.push('/admin/panel')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
                 Админ-панель
               </a>
               </div>

@@ -2,6 +2,323 @@
 import React, { useState } from "react";
 import leftArrowG from "./left"
 import rightArrowG from "./right"
+import { useQuery, QueryClient, useQueryClient } from "@tanstack/react-query";
+
+type TimeTable = [
+    /*{
+      "id": number,
+      "roomId": number,
+      "room": {
+        "id": number,
+        "name": string,
+        "campusId": number,
+        "campus": {
+          "id": number,
+          "address": string,
+          "affiliationId": number
+        }
+      },
+      "classId": number,
+      "class": {
+        "id": number,
+        "name": string,
+        "hours": number,
+        "terms": [],
+        "specialtyId": number,
+        "specialty": string | null,
+        "slotType": number
+      },
+      "groupIds": [],
+      "groups": null,
+      "lecturerId": number,
+      "lecturer": {
+        "id": number,
+        "userId": number,
+        "user": {
+          "id": number,
+          "name": string,
+          "email": string,
+          "password": string,
+          "phone": string,
+          "login": string,
+          "groupId": number,
+          "group": null,
+          "role": number
+        },
+        "classesId": [],
+        "classes": [
+          {
+            "id": number,
+            "name": string,
+            "hours": number,
+            "terms": [],
+            "specialtyId": number,
+            "specialty": null,
+            "slotType": number
+          }
+        ],
+        "hoursPerWeek": 6000,
+        "institutionId": 1,
+        "institut": null
+      },
+      "campusId": 1,
+      "campus": {
+        "id": 1,
+        "address": "Что-то красивенькое",
+        "affiliationId": 1
+      },
+      "affiliationId": 1,
+      "affiliation": null,
+      "week": 2,
+      "day": 2,
+      "slot": 1,
+      "slotType": 1
+    },
+    {
+      "id": 3,
+      "roomId": 1,
+      "room": {
+        "id": 1,
+        "name": "кабинет",
+        "campusId": 1,
+        "campus": {
+          "id": 1,
+          "address": "Что-то красивенькое",
+          "affiliationId": 1
+        }
+      },
+      "classId": 1,
+      "class": {
+        "id": 1,
+        "name": "Кабинетоведение",
+        "hours": 40,
+        "terms": [
+          1
+        ],
+        "specialtyId": 1,
+        "specialty": null,
+        "slotType": 0
+      },
+      "groupIds": [
+        1
+      ],
+      "groups": null,
+      "lecturerId": 1,
+      "lecturer": {
+        "id": 1,
+        "userId": 1,
+        "user": {
+          "id": 1,
+          "name": "Admin",
+          "email": "admin@admin.com",
+          "password": "admin",
+          "phone": "+380505555555",
+          "login": "admin",
+          "groupId": 1,
+          "group": null,
+          "role": 0
+        },
+        "classesId": [
+          1
+        ],
+        "classes": [
+          {
+            "id": 1,
+            "name": "Кабинетоведение",
+            "hours": 40,
+            "terms": [
+              1
+            ],
+            "specialtyId": 1,
+            "specialty": null,
+            "slotType": 0
+          }
+        ],
+        "hoursPerWeek": 6000,
+        "institutionId": 1,
+        "institut": null
+      },
+      "campusId": 1,
+      "campus": {
+        "id": 1,
+        "address": "Что-то красивенькое",
+        "affiliationId": 1
+      },
+      "affiliationId": 1,
+      "affiliation": null,
+      "week": 1,
+      "day": 2,
+      "slot": 1,
+      "slotType": 1
+    },
+    {
+      "id": 2,
+      "roomId": 1,
+      "room": {
+        "id": 1,
+        "name": "кабинет",
+        "campusId": 1,
+        "campus": {
+          "id": 1,
+          "address": "Что-то красивенькое",
+          "affiliationId": 1
+        }
+      },
+      "classId": 1,
+      "class": {
+        "id": 1,
+        "name": "Кабинетоведение",
+        "hours": 40,
+        "terms": [
+          1
+        ],
+        "specialtyId": 1,
+        "specialty": null,
+        "slotType": 0
+      },
+      "groupIds": [
+        1
+      ],
+      "groups": null,
+      "lecturerId": 1,
+      "lecturer": {
+        "id": 1,
+        "userId": 1,
+        "user": {
+          "id": 1,
+          "name": "Admin",
+          "email": "admin@admin.com",
+          "password": "admin",
+          "phone": "+380505555555",
+          "login": "admin",
+          "groupId": 1,
+          "group": null,
+          "role": 0
+        },
+        "classesId": [
+          1
+        ],
+        "classes": [
+          {
+            "id": 1,
+            "name": "Кабинетоведение",
+            "hours": 40,
+            "terms": [
+              1
+            ],
+            "specialtyId": 1,
+            "specialty": null,
+            "slotType": 0
+          }
+        ],
+        "hoursPerWeek": 6000,
+        "institutionId": 1,
+        "institut": null
+      },
+      "campusId": 1,
+      "campus": {
+        "id": 1,
+        "address": "Что-то красивенькое",
+        "affiliationId": 1
+      },
+      "affiliationId": 1,
+      "affiliation": null,
+      "week": 1,
+      "day": 1,
+      "slot": 2,
+      "slotType": 1
+    },
+    {
+      "id": 1,
+      "roomId": 1,
+      "room": {
+        "id": 1,
+        "name": "кабинет",
+        "campusId": 1,
+        "campus": {
+          "id": 1,
+          "address": "Что-то красивенькое",
+          "affiliationId": 1
+        }
+      },
+      "classId": 1,
+      "class": {
+        "id": 1,
+        "name": "Кабинетоведение",
+        "hours": 40,
+        "terms": [
+          1
+        ],
+        "specialtyId": 1,
+        "specialty": null,
+        "slotType": 0
+      },
+      "groupIds": [
+        1
+      ],
+      "groups": null,
+      "lecturerId": 1,
+      "lecturer": {
+        "id": 1,
+        "userId": 1,
+        "user": {
+          "id": 1,
+          "name": "Admin",
+          "email": "admin@admin.com",
+          "password": "admin",
+          "phone": "+380505555555",
+          "login": "admin",
+          "groupId": 1,
+          "group": null,
+          "role": 0
+        },
+        "classesId": [
+          1
+        ],
+        "classes": [
+          {
+            "id": 1,
+            "name": "Кабинетоведение",
+            "hours": 40,
+            "terms": [
+              1
+            ],
+            "specialtyId": 1,
+            "specialty": null,
+            "slotType": 0
+          }
+        ],
+        "hoursPerWeek": 6000,
+        "institutionId": 1,
+        "institut": null
+      },
+      "campusId": 1,
+      "campus": {
+        "id": 1,
+        "address": "Что-то красивенькое",
+        "affiliationId": 1
+      },
+      "affiliationId": 1,
+      "affiliation": null,
+      "week": 1,
+      "day": 1,
+      "slot": 1,
+      "slotType": 1
+    }*/
+  ]
+
+const getGroupTimeTable = async (groupId: number) => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/timetable/group/${groupId}`,
+      {
+        method: "GET",
+        credentials: "include"
+      }
+    );
+    const data = await response.json();
+
+    return data;
+  }
+
 
 // Example data structure for weeksData
 const weeksData = [
@@ -195,6 +512,12 @@ const ScheduleTemplate = (day: string, week: number) => {
 export default function Schedule() {
     const [selectedDay, setSelectedDay] = useState<string | null>(null); // Allow string or null
     const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
+
+    const {data: timeTableData, isLoading, error} = useQuery({
+        queryKey: ["timetable"],
+        queryFn: () => getGroupTimeTable(1),
+    });
+    console.log(timeTableData);
 
     // Define currentWeek based on currentWeekIndex
     const currentWeek = weeksData[currentWeekIndex];
