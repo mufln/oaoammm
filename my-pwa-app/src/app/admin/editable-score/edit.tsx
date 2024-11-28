@@ -26,13 +26,13 @@ enum Attendance {
 
 interface EditProps {
     _value: number, 
-    _absent: Attendance
+    _attendance: Attendance
 }
 
-export function Edit({_value, _absent}: EditProps) {
+export function Edit({_value, _attendance}: EditProps) {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = useState(_value); // Initial value
-  const [absent, setAbsent] = useState(_absent);
+  const [attendance, setattendance] = useState(_attendance);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = Number(event.target.value);
     setValue(newValue);
@@ -41,15 +41,17 @@ export function Edit({_value, _absent}: EditProps) {
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" className="justify-start border-0 shadow-none">
-            {absent === Attendance.Minus ? ("Н") : (absent === Attendance.Other ? "У" : ((value == 0) ? "+" : value))}
+            {attendance === Attendance.Minus ? "Н" : 
+             attendance === Attendance.Other ? "У" : 
+             value === 0 ? "+" : value}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="p-2 space-y-2" align="start">
-            <Tabs>
+            <Tabs defaultValue={String(attendance)}>
                 <TabsList>
-                    <TabsTrigger value="Minus" onClick={() => setAbsent(Attendance.Minus)}>Н</TabsTrigger>
-                    <TabsTrigger value="other" onClick={() => setAbsent(Attendance.Other)}>У</TabsTrigger>
-                    <TabsTrigger value="Plus" onClick={() => setAbsent(Attendance.Plus)}>+</TabsTrigger>
+                    <TabsTrigger value="Minus" onClick={() => setattendance(Attendance.Minus)}>Н</TabsTrigger>
+                    <TabsTrigger value="Other" onClick={() => setattendance(Attendance.Other)}>У</TabsTrigger>
+                    <TabsTrigger value="Plus" onClick={() => setattendance(Attendance.Plus)}>+</TabsTrigger>
                 </TabsList>
                 <TabsContent value="Plus">
                 <div className="flex items-center space-x-2">
