@@ -29,6 +29,43 @@ const login = async (email: string, password: string) => {
   }
 };
 
+// Функция для получения списка пользователей
+const getUsers = async () => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Accept": "application/json",
+      },
+    });
+
+    // Проверяем статус-код ответа
+    if (response.status === 200) {
+      const users = await response.json(); // Преобразуем ответ в JSON
+      return users; // Возвращаем массив пользователей
+    } else {
+      throw new Error('Не удалось получить пользователей');
+    }
+  } catch (error) {
+    console.error('Ошибка при получении пользователей:', error);
+    throw error; // Пробрасываем ошибку дальше
+  }
+};
+
+// Пример использования функции getUsers
+const fetchUsers = async () => {
+  try {
+    const usersArray = await getUsers(); // Получаем массив пользователей
+    return usersArray; // Возвращаем массив пользователей
+  } catch (error) {
+    console.error('Ошибка:', error.message);
+  }
+};
+
+// Вызов функции для получения пользователей
+
+
 // Главный компонент аутентификации
 export default function Authorization() {
   const router = useRouter();
@@ -42,16 +79,32 @@ export default function Authorization() {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
+    const users = await fetchUsers();
+    let role = null;
+
+    for (const user of users) {
+      if (user.email === email && user.password === password) {
+        role = user.role;
+      }
+    }
 
     try {
       await login(email, password); // Вызов функции логина
-      router.push('/dashboard'); // Перенаправление на панель управления
+      if (role === 0 || role === 1) {
+        router.push('/admin/panel'); // Перенаправление на панель управления
+      }
+      else if (role === 2) {
+        router.push('/student/stud-schedule'); // Перенаправление на панель управления
+      }
+      //router.push('/dashboard'); // Перенаправление на панель управления
     } catch (err) {
       setError(err.message); // Установка сообщения об ошибке
     } finally {
       setIsSubmitting(false);
     }
   };
+  
+  
 
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
