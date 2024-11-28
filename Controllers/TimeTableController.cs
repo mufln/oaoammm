@@ -305,4 +305,17 @@ public class TimeTableController : ControllerBase
         _context.SaveChanges();
         return Ok(await _context.TimeTables.Take(100).ToListAsync());
     }
+
+    [HttpGet("group/{id}")]
+    public async Task<IActionResult> GetTimeTablesByGroup(int id)
+    {
+        var timeTables = await _context.TimeTables
+            .Where(t => t.GroupIds.Contains(id))
+            .Include(t => t.Lecturer.User)
+            .Include(t => t.Room)
+            .Include(t => t.Campus)
+            .Include(t => t.Class)
+            .ToListAsync();
+        return Ok(timeTables);
+    }
 }
