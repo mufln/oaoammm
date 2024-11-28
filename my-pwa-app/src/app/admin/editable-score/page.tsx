@@ -192,7 +192,7 @@ export default function StudentPerformance() {
                   <TableCell className="font-medium sticky left-0 z-10 bg-white">{student.name}</TableCell>
                   {selectedSubjectData.dates.map(date => (
                     <TableCell key={date} className="text-center">
-                      <Edit _absent={student.attendance[date]} _value={student.grades[date]} />
+                      <Edit _attendance={student.attendance[date]} _value={student.grades[date] | 0} />
                     </TableCell>
                   ))}
                 </TableRow>
