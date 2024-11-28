@@ -87,7 +87,7 @@ public class AuthController : ControllerBase
             }
 
             await Authenticate(user.Id.ToString(), user.Role.ToString());
-            return Ok();
+            return Ok(user.Role);
         }
         catch (Exception e)
         {
