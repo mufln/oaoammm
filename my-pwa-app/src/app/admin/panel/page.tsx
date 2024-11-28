@@ -25,7 +25,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 
-const people = [
+const people= [
   {
     name: 'Leslie Alexander',
     email: 'leslie.alexander@example.com',
@@ -57,6 +57,41 @@ const people = [
     role: 'Director of Product'
   },
 ]
+
+const getUsers = async () => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Accept": "application/json",
+      },
+    });
+
+    // Проверяем статус-код ответа
+    if (response.status === 200) {
+      const users = await response.json(); // Преобразуем ответ в JSON
+      return users; // Возвращаем массив пользователей
+    } else {
+      throw new Error('Не удалось получить пользователей');
+    }
+  } catch (error) {
+    console.error('Ошибка при получении пользователей:', error);
+    throw error; // Пробрасываем ошибку дальше
+  }
+};
+
+// Пример использования функции getUsers
+const fetchUsers = async () => {
+  try {
+    const usersArray = await getUsers(); // Получаем массив пользователей
+    return usersArray; // Возвращаем массив пользователей
+  } catch (error) {
+    console.error('Ошибка:', error.message);
+  }
+};
+
+const workers = await fetchUsers();
 
 const institutions = [
   {id: 1, name: 'Институт информационных технологий'},
@@ -103,11 +138,6 @@ const campuses = [
   {id: 3, name: 'Кампус 3'},
 ]
 
-const workers = [
-  {id: 1, name: 'Сотрудник 1'},
-  {id: 2, name: 'Сотрудник 2'},
-  {id: 3, name: 'Сотрудник 3'},
-]
 
 export default function Example() {
   const [selectedInstitution, setSelectedInstitution] = useState<number | null>(null)

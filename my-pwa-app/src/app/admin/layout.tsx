@@ -80,17 +80,20 @@ export default function Example({
           <a onClick={() => router.push('/admin/score')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
             Успеваемость
           </a>
-          <a onClick={() => router.push('/student/elective')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
+          {/* <a onClick={() => router.push('/student/elective')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
             Факультативы
-          </a>
+          </a> */}
           <a onClick={() => router.push('/admin/panel')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
             Админ-панель
           </a>
-          <a onClick={() => router.push('/student/stud-schedule')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
+          {/* <a onClick={() => router.push('/student/stud-schedule')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
             Расписание студента
-          </a>
+          </a> */}
           <a onClick={() => router.push('/admin/editable-score')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
             Ред. успеваемость
+          </a>
+          <a onClick={() => router.push('/admin/git-admin')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
+            Репозиторий
           </a>
         </PopoverGroup>
         <AdminProfile/>
@@ -123,11 +126,17 @@ export default function Example({
               <a onClick={() => router.push('/admin/score')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
                 Успеваемость
               </a>
-              <a onClick={() => router.push('/student/elective')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
+              {/* <a onClick={() => router.push('/student/elective')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
                 Факультативы
-              </a>
+              </a> */}
               <a onClick={() => router.push('/admin/panel')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
                 Админ-панель
+              </a>
+              <a onClick={() => router.push('/admin/editable-score')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
+                Ред. успеваемость
+              </a>
+              <a onClick={() => router.push('/admin/git-admin')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
+                Репозиторий
               </a>
               </div>
               <div className="py-6">
