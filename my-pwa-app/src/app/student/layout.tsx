@@ -80,7 +80,7 @@ export default function Example({
             Расписание
           </a>
         </PopoverGroup>
-        <AdminProfile/>
+        <StudentProfile/>
       </nav>
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
         <div className="fixed inset-0 z-10" />
@@ -118,7 +118,7 @@ export default function Example({
               </a>
               </div>
               <div className="py-6">
-                <AdminProfile/>
+                <StudentProfile/>
               </div>
             </div>
           </div>
