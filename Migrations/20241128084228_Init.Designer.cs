@@ -12,8 +12,8 @@ using hihihiha.Context;
 namespace hihihiha.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20241124201840_init")]
-    partial class init
+    [Migration("20241128084228_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -135,6 +135,37 @@ namespace hihihiha.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ElectiveMembers");
+                });
+
+            modelBuilder.Entity("hihihiha.Models.Database.Exercise", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("LecturerId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RepoLink")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LecturerId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("Exercises");
                 });
 
             modelBuilder.Entity("hihihiha.Models.Database.Gpa", b =>
@@ -492,6 +523,25 @@ namespace hihihiha.Migrations
                     b.Navigation("Elective");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("hihihiha.Models.Database.Exercise", b =>
+                {
+                    b.HasOne("hihihiha.Models.Lecturer", "Lecturer")
+                        .WithMany()
+                        .HasForeignKey("LecturerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("hihihiha.Models.User", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lecturer");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("hihihiha.Models.Database.Gpa", b =>
