@@ -14,19 +14,60 @@ interface User {
 
 // 0-admin, 1 - lector, 2 - student
 
-export default function EditAdminProfile() {
-    const [userInfo, setUserInfo] = useState<User>({
-        id: 1,
-        login: "ivanov.i.i@edu.mirea.ru",
-        name: "Иванов Иван Иванович",
-        email: "ivanov.i.i@edu.mirea.ru",
-        password: "123456",
-        phone: "1234567890",
-        role: 0,
-        groupId: null
-    });
+const getUserById = async (userId: number) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Accept": "application/json",
+        },
+      });
+  
+      // Проверяем статус-код ответа
+      if (response.status === 200) {
+        const user = await response.json(); // Преобразуем ответ в JSON
+        return user; // Возвращаем массив пользователя
+      } else {
+        throw new Error('Не удалось получить пользователя');
+      }
+    } catch (error) {
+      console.error('Ошибка при получении пользователя:', error);
+      throw error; // Пробрасываем ошибку дальше
+    }
+};
+  
+const adminInfo = await getUserById(1);
 
-    const [formData, setFormData] = useState<User>(userInfo);
+const updateUser = async (userId: number, userData: User) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+  
+      // Проверяем статус-код ответа
+      if (response.status === 200) {
+        console.log("Данные обновлены");
+      } else {
+        throw new Error('Не удалось получить пользователя');
+      }
+    }
+    catch (error) {
+      console.error('Ошибка при обновлении пользователя:', error);
+      throw error; // Пробрасываем ошибку дальше
+    }
+};
+
+
+export default function EditAdminProfile() {
+    const [userInfo, setUserInfo] = useState(adminInfo);
+    const [formData, setFormData] = useState(userInfo);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -49,6 +90,8 @@ export default function EditAdminProfile() {
             phone: formData.phone.trim() !== "" ? formData.phone : prevState.phone,
         }));
         
+        updateUser(userInfo.id, formData);
+
         console.log("Сохраненные данные:", {
             name: formData.name || userInfo.name,
             login: formData.login || userInfo.login,
