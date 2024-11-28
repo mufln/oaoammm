@@ -83,10 +83,19 @@ const groups = [
 ]
 
 const classes = [
-  {id: 1, name: 'Класс 1'},
-  {id: 2, name: 'Класс 2'},
-  {id: 3, name: 'Класс 3'},
-]
+  { id: 1, name: 'А-101' },
+  { id: 2, name: 'Б-202' },
+  { id: 3, name: 'В-303' },
+  { id: 4, name: 'Г-404' },
+  { id: 5, name: 'Д-505' },
+  { id: 6, name: 'Е-606' },
+  { id: 7, name: 'З-707' },
+  { id: 8, name: 'И-808' },
+  { id: 9, name: 'К-909' },
+  { id: 10, name: 'Л-101' },
+  { id: 11, name: 'МП-61' },
+  { id: 12, name: 'НТ-72' },
+];
 
 const campuses = [
   {id: 1, name: 'Кампус 1'},
