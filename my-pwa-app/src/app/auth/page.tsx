@@ -58,7 +58,7 @@ const fetchUsers = async () => {
   try {
     const usersArray = await getUsers(); // Получаем массив пользователей
     return usersArray; // Возвращаем массив пользователей
-  } catch (error) {
+  } catch (error: any) {
     console.error('Ошибка:', error.message);
   }
 };
@@ -100,7 +100,7 @@ export default function Authorization() {
         router.push('/student/stud-schedule'); // Перенаправление на панель управления
       }
       //router.push('/dashboard'); // Перенаправление на панель управления
-    } catch (err) {
+    } catch (err : any) {
       setError(err.message); // Установка сообщения об ошибке
     } finally {
       setIsSubmitting(false);

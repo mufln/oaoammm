@@ -21,3 +21,18 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "hihihiha.dll"]
+
+# Use official PostgreSQL image
+FROM postgres:15
+
+# Set environment variables for the PostgreSQL user and database
+ENV POSTGRES_USER=${DB_USER}
+ENV POSTGRES_PASSWORD=${DB_PASSWORD}
+ENV POSTGRES_DB=${DB_NAME}
+
+# Copy your SQL initialization file to the Docker image
+#COPY ./init.sql /docker-entrypoint-initdb.d/
+
+# Expose the PostgreSQL default port
+EXPOSE 5432
+
