@@ -79,17 +79,20 @@ export default function Authorization() {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
-    const users = await fetchUsers();
-    let role = null;
-
-    for (const user of users) {
-      if (user.email === email && user.password === password) {
-        role = user.role;
-      }
-    }
+    
 
     try {
       await login(email, password); // Вызов функции логина
+      
+      const users = await fetchUsers();
+      let role = null;
+
+      for (const user of users) {
+        if (user.email === email && user.password === password) {
+          role = user.role;
+        }
+      }
+      
       if (role === 0 || role === 1) {
         router.push('/admin/panel'); // Перенаправление на панель управления
       }
