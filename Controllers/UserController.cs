@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace hihihiha.Routers;
@@ -172,5 +173,18 @@ public class UserController : ControllerBase
         {
             return StatusCode(500, $"Internal server error");
         }
+    }
+    
+    [HttpGet("me")]
+    [Authorize(Roles = "Admin, Lecturer, Student")]
+    public async Task<ActionResult<Models.User>> GetUserMe()
+    {
+        var userId = Int64.Parse(User.Identity.Name);
+        var user = await _context.Users.Include(u => u.Group).FirstOrDefaultAsync(u => u.Id == 1);
+        if (user == null)
+        {
+            return NotFound();
+        }
+        return Ok(user);
     }
 }
