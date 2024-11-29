@@ -1,192 +1,227 @@
-'use client';
+"use client";
+import React from 'react';
 
-import { useState } from 'react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { User, MapPin } from 'lucide-react';
-import { ChevronLeft, ChevronRight } from 'lucide-react'; // Импортируем иконки стрелок
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-type Group = {
-  name: string;
-  schedule: {
-    [key: string]: {
-      [key: string]: {
-        subject: string;
-        teacher: string;
-        room: string;
-        startTime: string;
-        endTime: string;
-      }[];
-    };
-  };
+
+const getTimetable = async () => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/timetable`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Accept": "application/json",
+      },
+    });
+
+    // Проверяем статус-код ответа
+    if (response.status === 200) {
+      const timetable = await response.json(); // Преобразуем ответ в JSON
+      return timetable; // Возвращаем массив расписание
+    } else {
+      throw new Error('Не удалось получить расписание');
+    }
+  }
+  catch (error) {
+    console.error('Ошибка при получении расписания:', error);
+    throw error; // Пробрасываем ошибку дальше
+  }
 };
 
-const groups: Group[] = [
-  {
-    name: 'ЭФБО-01-23',
-    schedule: {
-      week1: {
-        'Понедельник': [
-          { subject: 'Математика', teacher: 'Иванов И.И.', room: 'А-130', startTime: '09:00', endTime: '10:30' },
-          { subject: 'Физика', teacher: 'Петров П.П.', room: 'А-140', startTime: '11:00', endTime: '12:30' },
-        ],
-        'Вторник': [
-          { subject: 'Химия', teacher: 'Сидорова С.С.', room: 'А-150', startTime: '09:00', endTime: '10:30' },
-          { subject: 'Информатика', teacher: 'Козлов К.К.', room: 'А-160', startTime: '11:00', endTime: '12:30' },
-        ],
-      },
-      week2: {
-        'Понедельник': [
-          { subject: 'Литература', teacher: 'Смирнова Л.Л.', room: 'А-170', startTime: '09:00', endTime: '10:30' },
-          { subject: 'История', teacher: 'Новиков Н.Н.', room: 'А-180', startTime: '11:00', endTime: '12:30' },
-        ],
-        'Вторник': [
-          { subject: 'Английский', teacher: 'Морозова А.А.', room: 'А-190', startTime: '09:00', endTime: '10:30' },
-          { subject: 'Экономика', teacher: 'Волков В.В.', room: 'А-200', startTime: '11:00', endTime: '12:30' },
-        ],
-      },
-    },
-  },
-  {
-    name: 'ИФБО-02-23',
-    schedule: {
-      week1: {
-        'Понедельник': [
-          { subject: 'Программирование', teacher: 'Соколов С.С.', room: 'А-210', startTime: '09:00', endTime: '10:30' },
-          { subject: 'Базы данных', teacher: 'Лебедева Б.Б.', room: 'А-220', startTime: '11:00', endTime: '12:30' },
-        ],
-        'Вторник': [
-          { subject: 'Сети', teacher: 'Григорьев Г.Г.', room: 'А-230', startTime: '09:00', endTime: '10:30' },
-          { subject: 'Алгоритмы', teacher: 'Кузнецов А.А.', room: 'А-240', startTime: '11:00', endTime: '12:30' },
-        ],
-      },
-      week2: {
-        'Понедельник': [
-          { subject: 'Веб-разработка', teacher: 'Титов В.В.', room: 'А-250', startTime: '09:00', endTime: '10:30' },
-          { subject: 'Мобильная разработка', teacher: 'Орлова М.М.', room: 'А-260', startTime: '11:00', endTime: '12:30' },
-        ],
-        'Вторник': [
-          { subject: 'Искусственный интеллект', teacher: 'Федоров И.И.', room: 'А-270', startTime: '09:00', endTime: '10:30' },
-          { subject: 'Машинное обучение', teacher: 'Романова Р.Р.', room: 'А-280', startTime: '11:00', endTime: '12:30' },
-        ],
-      },
-    },
-  },
-]
+const timetableData = await getTimetable();
+console.log(timetableData);
+
+// const timetableData = [
+//   [
+//     {
+//       affiliation: null,
+//       affiliationId: 1,
+//       campus: null,
+//       campusId: 1,
+//       class: null,
+//       classId: 1,
+//       day: 1,
+//       groupIds: [1,2,3,4,5,6],
+//       groups: null,
+//       id: 1,
+//       lecturer: null,
+//       lecturerId: 1,
+//       room: null,
+//       roomId: 1,
+//       slot: 1,
+//       slotType: 1,
+//       week: 1,
+//     },
+//     {
+//       affiliation: null,
+//       affiliationId: 1,
+//       campus: null,
+//       campusId: 1,
+//       class: null,
+//       classId: 1,
+//       day: 1,
+//       groupIds: [1],
+//       groups: null,
+//       id: 2,
+//       lecturer: null,
+//       lecturerId: 1,
+//       room: null,
+//       roomId: 1,
+//       slot: 2,
+//       slotType: 1,
+//       week: 1,
+//     },
+//   ],
+//   [
+//     {
+//       affiliation: null,
+//       affiliationId: 1,
+//       campus: null,
+//       campusId: 1,
+//       class: null,
+//       classId: 1,
+//       day: 2,
+//       groupIds: [1],
+//       groups: null,
+//       id: 3,
+//       lecturer: null,
+//       lecturerId: 1,
+//       room: null,
+//       roomId: 1,
+//       slot: 1,
+//       slotType: 1,
+//       week: 1,
+//     },
+//     {
+//       affiliation: null,
+//       affiliationId: 1,
+//       campus: null,
+//       campusId: 1,
+//       class: null,
+//       classId: 1,
+//       day: 2,
+//       groupIds: [1],
+//       groups: null,
+//       id: 4,
+//       lecturer: null,
+//       lecturerId: 1,
+//       room: null,
+//       roomId: 1,
+//       slot:   2,
+//       slotType: 1,
+//       week: 2,
+//     },
+//   ],
+// ];
+
 
 const daysOfWeek = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
-const timeSlots = ['09:00 - 10:30', '11:00 - 12:30', '13:30 - 15:00', '15:30 - 17:00'];
 
-export default function ScheduleTable() {
-  const [currentWeek, setCurrentWeek] = useState(1); // Хранение текущей недели
-  const totalWeeks = 2; // Общее количество недель (например, 2 недели)
+// Объект с временными интервалами
+const timeSlots = {
+  1: '09:00 - 10:30',
+  2: '10:40 - 12:10',
+  3: '12:40 - 14:10',
+  4: '14:20 - 15:50',
+  5: '16:20 - 17:50',
+  6: '18:00 - 19:30',
+};
 
-  const handlePreviousWeek = () => {
-    setCurrentWeek(prev => Math.max(prev - 1, 1)); // Переход к предыдущей неделе, минимум 1
+const Timetable = () => {
+  const [currentWeek, setCurrentWeek] = React.useState(1);
+
+  const schedule = {};
+  daysOfWeek.forEach(day => {
+    schedule[day] = {};
+  });
+
+  const uniqueGroupIds = new Set();
+
+  timetableData.forEach(week => {
+    week.forEach(item => {
+      if (item.week === currentWeek) {
+        const day = daysOfWeek[item.day - 1];
+
+        item.groupIds.forEach(groupId => uniqueGroupIds.add(groupId));
+
+        const entry = item.class ? item.class.name : 'Не указано';
+        const lecturer = item.lecturer ? item.lecturer.name : 'Не указано';
+        const room = item.room ? item.room.name : 'Не указано';
+
+        item.groupIds.forEach(groupId => {
+          if (!schedule[day][groupId]) {
+            schedule[day][groupId] = [];
+          }
+
+          schedule[day][groupId].push({ entry, lecturer, room, slot: item.slot });
+        });
+      }
+    });
+  });
+
+  const groups = Array.from(uniqueGroupIds);
+
+  const nextWeek = () => {
+    setCurrentWeek(prevWeek => prevWeek + 1);
   };
 
-  const handleNextWeek = () => {
-    setCurrentWeek(prev => Math.min(prev + 1, totalWeeks)); // Переход к следующей неделе, максимум totalWeeks
+  const prevWeek = () => {
+    setCurrentWeek(prevWeek => (prevWeek > 1 ? prevWeek - 1 : 1));
   };
 
   return (
     <div className="container mx-auto p-4">
-      <div className="flex items-center space-x-2 mb-4">
-        <button 
-          onClick={handlePreviousWeek} 
-          className="p-2 border rounded"
-          disabled={currentWeek === 1} // Отключаем кнопку, если это первая неделя
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </button>
-        <span className="text-lg">Неделя {currentWeek}</span>
-        <button 
-          onClick={handleNextWeek} 
-          className="p-2 border rounded"
-          disabled={currentWeek === totalWeeks} // Отключаем кнопку, если это последняя неделя
-        >
-          <ChevronRight className="h-5 w-5" />
-        </button>
+      <div className='flex items-center space-x-2 mb-4'>
+        <button onClick={prevWeek}><ChevronLeft className="h-10 w-10" /></button>
+        <span className='text-primary text-2xl'>Неделя: {currentWeek} </span>
+        <button onClick={nextWeek}><ChevronRight className="h-10 w-10" /></button>
       </div>
+      
       <div className="overflow-x-auto rounded-lg border border-gray-200">
-        <Table className="w-full">
-          <TableHeader>
-            <TableRow key={0}>
-              <TableHead className="w-6 sticky left-0 z-1 bg-white text-black" rowSpan={2}>
-                <span className="sr-only text-black">День недели</span>
-              </TableHead>
-              <TableHead className="w-32 sticky left-12 z-1 bg-white" rowSpan={2}>
-                Время
-              </TableHead>
+        <table className="min-w-full border-collapse border border-gray-200">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border border-gray-300 p-2">День недели</th>
+              <th className="border border-gray-300 p-2">Время</th>
               {groups.map((group, index) => (
-                <TableHead key={index} className="text-center text-blue-600" colSpan={3}>
-                  {group.name}
-                </TableHead>
+                <th key={index} className="border border-gray-300 p-2">Группа {group}</th>
               ))}
-            </TableRow>
-            <TableRow key={1}>
-              {groups.map((group, index) => (
-                <>
-                  <TableHead key={`${index}-subject`} className="w-48">
-                    <div className="flex space-x-2">
-                      <span>Дисциплина</span>
-                    </div>
-                  </TableHead>
-                  <TableHead key={`${index}-teacher`} className="w-48">
-                    <div className="flex space-x-2">
-                      <User  className="h-4 w-4 text-primary" />
-                      <span>Преподаватель</span>
-                    </div>
-                  </TableHead>
-                  <TableHead key={`${index}-room`} className="w-24">
-                    <div className="flex space-x-2">
-                      <MapPin className="h-4 w-4 text-primary" />
-                      <span>Аудитория</span>
-                    </div>
-                  </TableHead>
-                </>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {daysOfWeek.map((day) => (
-              timeSlots.map((timeSlot, timeIndex) => (
-                <TableRow key={`${day}-${timeSlot}`}>
-                  {timeIndex === 0 && (
-                    <TableCell key={`${day}-${timeSlot}`} rowSpan={timeSlots.length} className="font-medium sticky left-0 z-10 bg-white border-r p-0">
-                      <div className="h-full flex items-center justify-center">
-                        <span className="transform -rotate-90 whitespace-nowrap">{day}</span>
-                      </div>
-                    </TableCell>
-                  )}
-                  <TableCell className="sticky left-12 z-10 bg-white">{timeSlot}</TableCell>
-                  {groups.map((group, index) => {
-                    const lesson = group.schedule[`week${currentWeek}`][day]?.find(
-                      l => `${l.startTime} - ${l.endTime}` === timeSlot
-                    );
-                    return (
-                      <>
-                        <TableCell key={index * 3} className="p-2">
-                          {lesson ? (
-                            <div className="font-semibold">{lesson.subject}</div>
-                          ) : null}
-                        </TableCell>
-                        <TableCell key={index * 3 + 1} className="p-2">
-                          {lesson ? (
-                            <div>{lesson.teacher}</div>
-                          ) : null}
-                        </TableCell>
-                        <TableCell key={index * 3 + 2} className="p-2 text-center">
-                          {lesson ? <div className="text-sm font-medium">{lesson.room}</div> : null}
-                        </TableCell>
-                      </>
-                    );
-                  })}
-                </TableRow>
-              ))
+            </tr>
+          </thead>
+          <tbody>
+            {daysOfWeek.map(day => (
+              <React.Fragment key={day}>
+                {Object.keys(timeSlots).map((slot, index) => (
+                  <tr key={`${day}-${slot}`} className="hover:bg-gray-50">
+                    {index === 0 ? (
+                      <td className="border border-gray-300 p-2" rowSpan={6}>
+                        {day}
+                      </td>
+                    ) : null}
+                    <td className="border border-gray-300 p-2">{timeSlots[slot]}</td>
+                    {groups.map(group => {
+                      const groupEntries = schedule[day][group] || [];
+                      const groupEntry = groupEntries.find(e => e.slot === parseInt(slot));
+                      return (
+                        <td key={group} className="border border-gray-300 p-2">
+                          {groupEntry ? (
+                            <div>
+                              {groupEntry.entry} - {groupEntry.lecturer} - {groupEntry.room}
+                            </div>
+                          ) : 'Нет занятий'}
+ </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </React.Fragment>
             ))}
-          </TableBody>
-        </Table>
+          </tbody>
+        </table>
       </div>
+      
     </div>
   );
-}
+};
+
+export default Timetable;
