@@ -21,8 +21,8 @@ export default function Specialties() {
         }
     })
     return (
-        <div className="w-full">
-            <h1>Специальности</h1>
+        <div className="w-full p-3 text-xl">
+            <h1 className="text-4xl font-italic text-indigo-600 mb-4">Специальности</h1>
             <div>
                 <SpecialtyEntry entry={null}/>
                 {status === "success" && data.map((entry: any) => <SpecialtyEntry key={entry.id + entry.name + entry.affiliationId} entry={entry}/>)}

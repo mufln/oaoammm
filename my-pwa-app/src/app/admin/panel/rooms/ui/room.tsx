@@ -70,7 +70,7 @@ export default function InstitutEntry({entry}: {entry: {id: number, name: string
         affiliationId: affiliationId
     }
     return (
-        <div className="flex ">
+        <div className="flex flex-row items-center gap-x-2">
             <input type="text" placeholder={entry? entry.name: "Имя"} className="block px-2 max-w-52 flex-1 bg-transparent py-2 text-gray-500 placeholder:text-gray-400 focus:text-black focus:outline-none border-b-0 focus:border-b-2 focus:border-indigo-600 sm:text-sm/6 w-max" defaultValue={entry? entry.name : ""} onChange={(e) => setName(e.target.value)}/>
             <select onChange={(e) => setAffiliationId(Number(e.target.value))} defaultValue={entry? entry.affiliationId : 0} className="block px-2 max-w-52 flex-1 bg-transparent py-2 text-gray-500 placeholder:text-gray-400 focus:text-black focus:outline-none border-b-0 focus:border-b-2 focus:border-indigo-600 sm:text-sm/6 w-max">
                 <option value={0} disabled>Выберите филиал</option>

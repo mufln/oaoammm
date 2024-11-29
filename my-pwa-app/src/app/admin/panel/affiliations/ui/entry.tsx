@@ -48,8 +48,8 @@ export default function AffiliationEntry({affiliation}: {affiliation: {id: numbe
     }
     const [name, setName] = useState(affiliation? affiliation.name : "")
     return (
-        <div className="flex ">
-            <input type="text" placeholder={affiliation? affiliation.name: "Имя"} className="block px-2 max-w-52 flex-1 bg-transparent py-2 text-gray-500 placeholder:text-gray-400 focus:text-black focus:outline-none border-b-0 focus:border-b-2 focus:border-indigo-600 sm:text-sm/6 w-max" value={name} onChange={(e) => setName(e.target.value)}/>
+        <div className="flex flex-row items-center gap-x-2 ">
+            <input type="text" placeholder={affiliation? affiliation.name: "Имя"} className="text-xl block px-2 max-w-52 flex-1 bg-transparent py-2 text-gray-500 placeholder:text-gray-400 focus:text-black focus:outline-none border-b-0 focus:border-b-2 focus:border-indigo-600 sm:text-sm/6 w-max" value={name} onChange={(e) => setName(e.target.value)}/>
             {affiliation === null && <button className="mr-4 mt-4 md:mt-0 p-2 bg-indigo-600 text-sm font-bold text-white rounded-lg"
                      onClick={() => SaveAffiliation(name)}>
                 Добавить

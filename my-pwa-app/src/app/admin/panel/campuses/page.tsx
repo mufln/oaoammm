@@ -18,8 +18,8 @@ export default function Affiliations() {
         }
     })
     return (
-        <div className="w-full">
-            <h1>Корпусы</h1>
+        <div className="w-full p-3 text-xl">
+            <h1 className="text-4xl font-italic text-indigo-600 mb-4">Корпусы</h1>
             <div>
                 <CampusEntry entry={null}/>
                 {status === "success" && data.map((entry: any) => <CampusEntry key={entry.id + entry.address + entry.affiliationId} entry={entry}/>)}
