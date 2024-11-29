@@ -87,6 +87,7 @@ public class Env
             if (ip == null)
             {
                 return "default";
+                // скорее всего будет что-то типа 172.xx.0.4
             }
 
             return ip;
