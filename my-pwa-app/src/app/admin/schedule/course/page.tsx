@@ -292,7 +292,7 @@ const Timetable = () => {
               <th className="border border-gray-300 p-2">День недели</th>
               <th className="border border-gray-300 p-2">Время</th>
               {groups.map((group, index) => (
-                <th key={index} className="border border-gray-300 p-2">Группа {group}</th>
+                <th key={index} className="border border-gray-300 p-2">{getGroupNameById(group)}</th>
               ))}
             </tr>
           </thead>
