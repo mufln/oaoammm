@@ -2,6 +2,7 @@
 import React from 'react';
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { get } from 'http';
 
 
 const getTimetable = async () => {
@@ -114,6 +115,113 @@ console.log(timetableData);
 //   ],
 // ];
 
+const getGroupNameById = async (groupId: number) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/groups/${groupId}`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Accept": "application/json",
+        },
+      });
+  
+      // Проверяем статус-код ответа
+      if (response.status === 200) {
+        const group = await response.json(); // Преобразуем ответ в JSON
+        return group.name; // Возвращаем массив пользователя
+      } else {
+        throw new Error('Не удалось получить пользователя');
+      }
+    } catch (error) {
+      console.error('Ошибка при получении пользователя:', error);
+      throw error; // Пробрасываем ошибку дальше
+    }
+};
+
+const getLecturerNameById = async (lecturerId: number) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/lecturers/${lecturerId}`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Accept": "application/json",
+        },
+      });
+  
+      // Проверяем статус-код ответа
+      if (response.status === 200) {
+        const lecturer = await response.json(); // Преобразуем ответ в JSON
+        return lecturer.user.name; // Возвращаем массив пользователя
+      } else {
+        throw new Error('Не удалось получить пользователя');
+      }
+    } catch (error) {
+      console.error('Ошибка при получении пользователя:', error);
+      throw error; // Пробрасываем ошибку дальше
+    }
+};
+
+const getRoomNameById = async (roomId: number) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/rooms/${roomId}`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Accept": "application/json",
+        },
+      });
+  
+      // Проверяем статус-код ответа
+      if (response.status === 200) {
+        const room = await response.json(); // Преобразуем ответ в JSON
+        return room.name; // Возвращаем массив пользователя
+      } else {
+        throw new Error('Не удалось получить пользователя');
+      }
+    } catch (error) {
+      console.error('Ошибка при получении пользователя:', error);
+      throw error; // Пробрасываем ошибку дальше
+    }
+};
+
+const getClassNameById = async (classId: number) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/subjects/${classId}`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Accept": "application/json",
+        },
+      });
+  
+      // Проверяем статус-код ответа
+      if (response.status === 200) {
+        const classs = await response.json(); // Преобразуем ответ в JSON
+        return classs.name; // Возвращаем массив пользователя
+      } else {
+        throw new Error('Не удалось получить пользователя');
+      }
+    }
+    catch (error) {
+      console.error('Ошибка при получении пользователя:', error);
+      throw error; // Пробрасываем ошибку дальше
+    }
+};
+
+const class1 = await getClassNameById(1);
+console.log(class1);
+
+const room1 = await getRoomNameById(1);
+console.log(room1);
+
+const lecturer1 = await getLecturerNameById(1);
+console.log(lecturer1);
+
+
+const group1 = await getGroupNameById(1);
+console.log(group1);
+
+
 
 const daysOfWeek = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
 
@@ -144,9 +252,9 @@ const Timetable = () => {
 
         item.groupIds.forEach(groupId => uniqueGroupIds.add(groupId));
 
-        const entry = item.class ? item.class.name : 'Не указано';
-        const lecturer = item.lecturer ? item.lecturer.name : 'Не указано';
-        const room = item.room ? item.room.name : 'Не указано';
+        const entry = getClassNameById(item.classId);
+        const lecturer =  getLecturerNameById(item.lecturerId);
+        const room =  getRoomNameById(item.roomId);
 
         item.groupIds.forEach(groupId => {
           if (!schedule[day][groupId]) {
@@ -208,7 +316,7 @@ const Timetable = () => {
                             <div>
                               {groupEntry.entry} - {groupEntry.lecturer} - {groupEntry.room}
                             </div>
-                          ) : 'Нет занятий'}
+                          ) : ''}
  </td>
                       );
                     })}
