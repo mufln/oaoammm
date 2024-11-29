@@ -1,32 +1,30 @@
 const getTimetable = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/timetable`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Accept": "application/json",
-        },
-      });
-  
-      // Проверяем статус-код ответа
-      if (response.status === 200) {
-        const timetable = await response.json(); // Преобразуем ответ в JSON
-        return timetable; // Возвращаем массив расписание
-      } else {
-        throw new Error('Не удалось получить расписание');
-      }
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/timetable`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Accept": "application/json",
+      },
+    });
+
+    // Проверяем статус-код ответа
+    if (response.status === 200) {
+      const timetable = await response.json(); // Преобразуем ответ в JSON
+      return timetable; // Возвращаем массив расписание
+    } else {
+      throw new Error('Не удалось получить расписание');
     }
-    catch (error) {
-      console.error('Ошибка при получении расписания:', error);
-      throw error; // Пробрасываем ошибку дальше
-    }
+  }
+  catch (error) {
+    console.error('Ошибка при получении расписания:', error);
+    throw error; // Пробрасываем ошибку дальше
+  }
 };
 
-const timetable = await getTimetable();
-  
-console.log(timetable);
 
-type Affiliation = {
+
+type Affiliation  = {
   id: number,
   name: string
 }
@@ -129,6 +127,10 @@ type Day = {lessons: Lesson[]}
 
 type BdTimeTable = {day: Day[]}
 
+interface bdTimeTable {
+    day: Day[]
+}
+
 type frontLesson = {
     subject: string
     teacher: string
@@ -225,10 +227,17 @@ const transformToFrontGroups = (bdTimeTables: BdTimeTable[]): frontGroup[] => {
       return frontGroups;
 };
 
-const  newGroups = transformToFrontGroups(timetable);
-console.log(newGroups);
+
+
+
 
 export default function Groups() {
+  const timetable = getTimetable();
+
+  console.log(timetable);
+
+  const  newGroups = transformToFrontGroups(timetable);
+  console.log(newGroups);
   return (
     <div>
       <h1>Groups</h1>

@@ -21,7 +21,7 @@ const sections = [
       },
     // More posts...
   ]
-  
+
   export default function Cards() {
     const router = useRouter()
     return (

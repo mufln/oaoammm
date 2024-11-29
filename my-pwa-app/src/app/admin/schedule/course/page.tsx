@@ -1,31 +1,30 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { User, MapPin } from 'lucide-react'
+import { useState } from 'react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { User, MapPin } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react'; // Импортируем иконки стрелок
 
 type Group = {
-  name: string
+  name: string;
   schedule: {
     [key: string]: {
       [key: string]: {
-        subject: string
-        teacher: string
-        room: string
-        startTime: string
-        endTime: string
-      }[]
-    }
-  }
-}
+        subject: string;
+        teacher: string;
+        room: string;
+        startTime: string;
+        endTime: string;
+      }[];
+    };
+  };
+};
 
 const groups: Group[] = [
   {
     name: 'ЭФБО-01-23',
     schedule: {
-      even: {
+      week1: {
         'Понедельник': [
           { subject: 'Математика', teacher: 'Иванов И.И.', room: 'А-130', startTime: '09:00', endTime: '10:30' },
           { subject: 'Физика', teacher: 'Петров П.П.', room: 'А-140', startTime: '11:00', endTime: '12:30' },
@@ -35,7 +34,7 @@ const groups: Group[] = [
           { subject: 'Информатика', teacher: 'Козлов К.К.', room: 'А-160', startTime: '11:00', endTime: '12:30' },
         ],
       },
-      odd: {
+      week2: {
         'Понедельник': [
           { subject: 'Литература', teacher: 'Смирнова Л.Л.', room: 'А-170', startTime: '09:00', endTime: '10:30' },
           { subject: 'История', teacher: 'Новиков Н.Н.', room: 'А-180', startTime: '11:00', endTime: '12:30' },
@@ -50,7 +49,7 @@ const groups: Group[] = [
   {
     name: 'ИФБО-02-23',
     schedule: {
-      even: {
+      week1: {
         'Понедельник': [
           { subject: 'Программирование', teacher: 'Соколов С.С.', room: 'А-210', startTime: '09:00', endTime: '10:30' },
           { subject: 'Базы данных', teacher: 'Лебедева Б.Б.', room: 'А-220', startTime: '11:00', endTime: '12:30' },
@@ -60,7 +59,7 @@ const groups: Group[] = [
           { subject: 'Алгоритмы', teacher: 'Кузнецов А.А.', room: 'А-240', startTime: '11:00', endTime: '12:30' },
         ],
       },
-      odd: {
+      week2: {
         'Понедельник': [
           { subject: 'Веб-разработка', teacher: 'Титов В.В.', room: 'А-250', startTime: '09:00', endTime: '10:30' },
           { subject: 'Мобильная разработка', teacher: 'Орлова М.М.', room: 'А-260', startTime: '11:00', endTime: '12:30' },
@@ -74,24 +73,39 @@ const groups: Group[] = [
   },
 ]
 
-const daysOfWeek = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота']
-const timeSlots = ['09:00 - 10:30', '11:00 - 12:30', '13:30 - 15:00', '15:30 - 17:00']
+const daysOfWeek = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+const timeSlots = ['09:00 - 10:30', '11:00 - 12:30', '13:30 - 15:00', '15:30 - 17:00'];
 
 export default function ScheduleTable() {
-  const [isEvenWeek, setIsEvenWeek] = useState(true)
+  const [currentWeek, setCurrentWeek] = useState(1); // Хранение текущей недели
+  const totalWeeks = 2; // Общее количество недель (например, 2 недели)
+
+  const handlePreviousWeek = () => {
+    setCurrentWeek(prev => Math.max(prev - 1, 1)); // Переход к предыдущей неделе, минимум 1
+  };
+
+  const handleNextWeek = () => {
+    setCurrentWeek(prev => Math.min(prev + 1, totalWeeks)); // Переход к следующей неделе, максимум totalWeeks
+  };
 
   return (
     <div className="container mx-auto p-4">
       <div className="flex items-center space-x-2 mb-4">
-        <Switch
-          id="week-toggle"
-          checked={isEvenWeek}
-          onCheckedChange={setIsEvenWeek}
-          className="data-[state=checked]:bg-blue-600"
-        />
-        <Label htmlFor="week-toggle" className="text-primary">
-          {isEvenWeek ? 'Четная неделя' : 'Нечетная неделя'}
-        </Label>
+        <button 
+          onClick={handlePreviousWeek} 
+          className="p-2 border rounded"
+          disabled={currentWeek === 1} // Отключаем кнопку, если это первая неделя
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <span className="text-lg">Неделя {currentWeek}</span>
+        <button 
+          onClick={handleNextWeek} 
+          className="p-2 border rounded"
+          disabled={currentWeek === totalWeeks} // Отключаем кнопку, если это последняя неделя
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
       </div>
       <div className="overflow-x-auto rounded-lg border border-gray-200">
         <Table className="w-full">
@@ -119,7 +133,7 @@ export default function ScheduleTable() {
                   </TableHead>
                   <TableHead key={`${index}-teacher`} className="w-48">
                     <div className="flex space-x-2">
-                      <User className="h-4 w-4 text-primary" />
+                      <User  className="h-4 w-4 text-primary" />
                       <span>Преподаватель</span>
                     </div>
                   </TableHead>
@@ -146,26 +160,26 @@ export default function ScheduleTable() {
                   )}
                   <TableCell className="sticky left-12 z-10 bg-white">{timeSlot}</TableCell>
                   {groups.map((group, index) => {
-                    const lesson = group.schedule[isEvenWeek ? 'even' : 'odd'][day]?.find(
+                    const lesson = group.schedule[`week${currentWeek}`][day]?.find(
                       l => `${l.startTime} - ${l.endTime}` === timeSlot
-                    )
+                    );
                     return (
                       <>
-                        <TableCell key={index*3} className="p-2">
+                        <TableCell key={index * 3} className="p-2">
                           {lesson ? (
                             <div className="font-semibold">{lesson.subject}</div>
                           ) : null}
                         </TableCell>
-                        <TableCell key={index*3 + 1} className="p-2">
+                        <TableCell key={index * 3 + 1} className="p-2">
                           {lesson ? (
                             <div>{lesson.teacher}</div>
                           ) : null}
                         </TableCell>
-                        <TableCell key={index*3 + 2} className="p-2 text-center">
+                        <TableCell key={index * 3 + 2} className="p-2 text-center">
                           {lesson ? <div className="text-sm font-medium">{lesson.room}</div> : null}
                         </TableCell>
                       </>
-                    )
+                    );
                   })}
                 </TableRow>
               ))
@@ -174,5 +188,5 @@ export default function ScheduleTable() {
         </Table>
       </div>
     </div>
-  )
+  );
 }
