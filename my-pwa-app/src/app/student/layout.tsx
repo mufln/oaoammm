@@ -73,14 +73,17 @@ export default function Example({
           </button>
         </div>
         <PopoverGroup className="hidden lg:flex lg:gap-x-12">
-          <a onClick={() => router.push('/stud/elective')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
-            Факультативы
-          </a>
-          <a onClick={() => router.push('/stud/stud-schedule')} className="text-sm/6 font-semibold text-gray-900 hover:cursor-pointer">
-            Расписание
+              <a onClick={() => router.push('/student/elective')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
+                Факультативы
+              </a>
+              <a onClick={() => router.push('/student/stud-schedule')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
+                Расписание студента
+              </a>
+          <a onClick={() => router.push('/student/git-student')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
+            Репозиторий
           </a>
         </PopoverGroup>
-        <AdminProfile/>
+        <StudentProfile/>
       </nav>
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
         <div className="fixed inset-0 z-10" />
@@ -116,9 +119,12 @@ export default function Example({
               <a onClick={() => router.push('/student/stud-schedule')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
                 Расписание студента
               </a>
+              <a onClick={() => router.push('/student/git-student')} className="text-base block font-semibold text-gray-900 hover:cursor-pointer">
+                Репозиторий
+              </a>
               </div>
               <div className="py-6">
-                <AdminProfile/>
+                <StudentProfile/>
               </div>
             </div>
           </div>

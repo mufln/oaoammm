@@ -43,7 +43,7 @@ const sections = [
                         Бакалавриат
                     </h2>
                     <div className="flex flex-wrap gap-x-2">
-                        <span onClick={() => router.push('/home/schedule/course')} className="inline-flex items-center rounded-xl bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/2 hover:cursor-pointer">
+                        <span onClick={() => router.push('/admin/schedule/course')} className="inline-flex items-center rounded-xl bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/2 hover:cursor-pointer">
                             1 курс
                         </span>
                         <span className="inline-flex items-center rounded-xl bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/2 hover:cursor-pointer">

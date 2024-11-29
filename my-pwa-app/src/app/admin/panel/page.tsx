@@ -25,7 +25,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 
-const people = [
+const people= [
   {
     name: 'Leslie Alexander',
     email: 'leslie.alexander@example.com',
@@ -58,47 +58,240 @@ const people = [
   },
 ]
 
-const institutions = [
-  {id: 1, name: 'Институт информационных технологий'},
-  {id: 2, name: 'Институт индустриального программирования'},
-  {id: 3, name: 'Институт радиоэлектроники'},
-  {id: 4, name: 'Институт тонких химических технологий'},
-]
+const getUsers = async () => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Accept": "application/json",
+      },
+    });
 
-const subjects = [
-  {id: 1, name: 'Математика'},
-  {id: 2, name: 'Физика'},
-  {id: 3, name: 'Информатика'},
-]
+    // Проверяем статус-код ответа
+    if (response.status === 200) {
+      const users = await response.json(); // Преобразуем ответ в JSON
+      return users; // Возвращаем массив пользователей
+    } else {
+      throw new Error('Не удалось получить пользователей');
+    }
+  } catch (error) {
+    console.error('Ошибка при получении пользователей:', error);
+    throw error; // Пробрасываем ошибку дальше
+  }
+};
 
-const groups = [
-  {id: 1, name: 'Группа 1'},
-  {id: 2, name: 'Группа 2'},
-  {id: 3, name: 'Группа 3'},
-  {id: 4, name: 'Группа 4'},
-  {id: 5, name: 'Группа 5'},
-  {id: 6, name: 'Группа 6'},
-  {id: 7, name: 'Группа 7'},
-  {id: 8, name: 'Группа 8'},
-]
+// Пример использования функции getUsers
+const fetchUsers = async () => {
+  try {
+    const usersArray = await getUsers(); // Получаем массив пользователей
+    return usersArray; // Возвращаем массив пользователей
+  } catch (error) {
+    console.error('Ошибка:', error.message);
+  }
+};
 
-const classes = [
-  {id: 1, name: 'Класс 1'},
-  {id: 2, name: 'Класс 2'},
-  {id: 3, name: 'Класс 3'},
-]
+const workers = await fetchUsers();
 
-const campuses = [
-  {id: 1, name: 'Кампус 1'},
-  {id: 2, name: 'Кампус 2'},
-  {id: 3, name: 'Кампус 3'},
-]
+const getCampuses = async () => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/campus`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Accept": "application/json",
+      },
+    });
 
-const workers = [
-  {id: 1, name: 'Сотрудник 1'},
-  {id: 2, name: 'Сотрудник 2'},
-  {id: 3, name: 'Сотрудник 3'},
-]
+    // Проверяем статус-код ответа
+    if (response.status === 200) {
+      const institutions = await response.json(); // Преобразуем ответ в JSON
+      return institutions; // Возвращаем массив институтов
+    } else {
+      throw new Error('Не удалось получить кампусы');
+    }
+  } catch (error) {
+    console.error('Ошибка при получении кампусов:', error);
+    throw error; // Пробрасываем ошибку дальше
+  }
+};
+
+// Пример использования функции getUsers
+const fetchCampuses = async () => {
+  try {
+    const institutionsArray = await getCampuses(); // Получаем массив институтов
+    return institutionsArray; // Возвращаем массив институтов
+  } catch (error) {
+    console.error('Ошибка:', error.message);
+  }
+};
+
+function transformToCampuses(data) {
+  return data.map((item) => ({
+    id: item.id,
+    name: item.address
+  }));
+}
+
+const campusesInit = await fetchCampuses();
+console.log(campusesInit);
+
+const campuses = transformToCampuses(campusesInit);
+console.log(campuses);
+
+const getInstitutions = async () => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/institutes`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Accept": "application/json",
+      },
+    });
+
+    // Проверяем статус-код ответа
+    if (response.status === 200) {
+      const institutions = await response.json(); // Преобразуем ответ в JSON
+      return institutions; // Возвращаем массив институтов
+    } else {
+      throw new Error('Не удалось получить институты');
+    }
+  }
+  catch (error) {
+    console.error('Ошибка при получении институтов:', error);
+    throw error; // Пробрасываем ошибку дальше
+  }
+};
+
+// Пример использования функции getUsers
+const fetchInstitutions = async () => {
+  try {
+    const institutionsArray = await getInstitutions(); // Получаем массив институтов
+    return institutionsArray; // Возвращаем массив институтов
+  } catch (error) {
+    console.error('Ошибка:', error.message);
+  }
+};
+
+const institutions = await fetchInstitutions();
+
+const getSubjects = async () => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/subjects`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Accept": "application/json",
+      },
+    });
+
+    // Проверяем статус-код ответа
+    if (response.status === 200) {
+      const subjects = await response.json(); // Преобразуем ответ в JSON
+      return subjects; // Возвращаем массив предметов
+    } else {
+      throw new Error('Не удалось получить предметы');
+    }
+  }
+  catch (error) {
+    console.error('Ошибка при получении предметов:', error);
+    throw error; // Пробрасываем ошибку дальше
+  }
+};
+
+const subjects = await getSubjects();
+
+const getGroups = async () => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/groups`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Accept": "application/json",
+      },
+    });
+
+    // Проверяем статус-код ответа
+    if (response.status === 200) {
+      const groups = await response.json(); // Преобразуем ответ в JSON
+      return groups; // Возвращаем массив групп
+    } else {
+      throw new Error('Не удалось получить группы');
+    }
+  }
+  catch (error) {
+    console.error('Ошибка при получении групп:', error);
+    throw error; // Пробрасываем ошибку дальше
+  }
+};
+
+const groups = await getGroups();
+
+const getClasses = async () => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/rooms`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Accept": "application/json",
+      },
+    });
+
+    // Проверяем статус-код ответа
+    if (response.status === 200) {
+      const classes = await response.json(); // Преобразуем ответ в JSON
+      return classes; // Возвращаем массив классов
+    } else {
+      throw new Error('Не удалось получить классы');
+    }
+  }
+  catch (error) {
+    console.error('Ошибка при получении классов:', error);
+    throw error; // Пробрасываем ошибку дальше
+  }
+};
+
+const classes = await getClasses();
+// ]
+
+// const subjects = [
+//   {id: 1, name: 'Математика'},
+//   {id: 2, name: 'Физика'},
+//   {id: 3, name: 'Информатика'},
+// ]
+
+// const groups = [
+//   {id: 1, name: 'Группа 1'},
+//   {id: 2, name: 'Группа 2'},
+//   {id: 3, name: 'Группа 3'},
+//   {id: 4, name: 'Группа 4'},
+//   {id: 5, name: 'Группа 5'},
+//   {id: 6, name: 'Группа 6'},
+//   {id: 7, name: 'Группа 7'},
+//   {id: 8, name: 'Группа 8'},
+// ]
+
+// const classes = [
+//   { id: 1, name: 'А-101' },
+//   { id: 2, name: 'Б-202' },
+//   { id: 3, name: 'В-303' },
+//   { id: 4, name: 'Г-404' },
+//   { id: 5, name: 'Д-505' },
+//   { id: 6, name: 'Е-606' },
+//   { id: 7, name: 'З-707' },
+//   { id: 8, name: 'И-808' },
+//   { id: 9, name: 'К-909' },
+//   { id: 10, name: 'Л-101' },
+//   { id: 11, name: 'МП-61' },
+//   { id: 12, name: 'НТ-72' },
+// ];
+
+// const campuses = [
+//   {id: 1, name: 'Кампус 1'},
+//   {id: 2, name: 'Кампус 2'},
+//   {id: 3, name: 'Кампус 3'},
+// ]
+
 
 export default function Example() {
   const [selectedInstitution, setSelectedInstitution] = useState<number | null>(null)
