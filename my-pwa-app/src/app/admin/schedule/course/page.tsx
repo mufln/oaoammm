@@ -292,11 +292,11 @@ const Timetable = () => {
               <th className="border border-gray-300 p-2">День недели</th>
               <th className="border border-gray-300 p-2">Время</th>
               {groups.map((group, index) => (
-                <th key={index} className="border border-gray-300 p-2">{getGroupNameById(group)}</th>
+                <th key={index} className="border border-gray-300 p-2">Группа {getGroupNameById(group)}</th>
               ))}
             </tr>
           </thead>
-          <tbody>
+          <tbody className='text-xl text-center'>
             {daysOfWeek.map(day => (
               <React.Fragment key={day}>
                 {Object.keys(timeSlots).map((slot, index) => (
@@ -313,8 +313,10 @@ const Timetable = () => {
                       return (
                         <td key={group} className="border border-gray-300 p-2">
                           {groupEntry ? (
-                            <div>
-                              {groupEntry.entry} - {groupEntry.lecturer} - {groupEntry.room}
+                            <div className='flex flex-col sm:flex-row justify-between p-1'>
+                              <div> <div className='text-indigo-600'>{groupEntry.entry}</div><div className='text-sm text-gray-500'>Дисциплина</div></div>
+                              <div> <div >{groupEntry.lecturer}</div><div className='text-sm text-gray-500'>Преподаватель</div></div>
+                              <div> <div>{groupEntry.room}</div><div className='text-sm text-gray-500'>Аудитория</div></div>
                             </div>
                           ) : ''}
  </td>
