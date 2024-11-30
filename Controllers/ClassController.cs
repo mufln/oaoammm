@@ -1,4 +1,5 @@
 using hihihiha.Context;
+using hihihiha.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -43,11 +44,6 @@ public class ClassController : ControllerBase
     public async Task<ActionResult<List<Models.Class>>> GetClassesByGroupId(int id)
     {
         var classes = await _context.Classes.Where(c => _context.Groups.Any(g => g.SpecialtyId == c.SpecialtyId)).ToListAsync();
-        if (classes.Count == 0)
-        {
-            return NotFound();
-        }
-
         return Ok(classes);
     }
 
@@ -69,12 +65,11 @@ public class ClassController : ControllerBase
 
     
     [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateClass([FromBody] Models.Class newClass, int id)
+    public async Task<ActionResult> UpdateClass([FromBody] Class newClass, int id)
     {
         try
         {
-            newClass.Id = id;
-            var existingClass = await _context.Classes.Include(c => c.Specialty).FirstOrDefaultAsync(c => c.Id == id);
+            Class? existingClass = await _context.Classes.Include(c => c.Specialty).FirstOrDefaultAsync(c => c.Id == id);
             if (existingClass == null)
             {
                 return NotFound();
@@ -96,7 +91,7 @@ public class ClassController : ControllerBase
 
             if (newClass.SpecialtyId != 0)
             {
-                existingClass.Specialty = newClass.Specialty;
+                existingClass.SpecialtyId = newClass.SpecialtyId;
             }
 
             await _context.SaveChangesAsync();

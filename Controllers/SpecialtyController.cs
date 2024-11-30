@@ -36,7 +36,19 @@ public class SpecialtyController : ControllerBase
 
         return Ok(specialty);
     }
-
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteSpecialty(int id)
+    {
+        var specialty = await _context.Specialty.FindAsync(id);
+        if (specialty == null)
+        {
+            return NotFound();
+        }
+        _context.Specialty.Remove(specialty);
+        await _context.SaveChangesAsync();
+        return Ok(true);
+    }   
+    
     [HttpPost]
     public async Task<ActionResult> CreateSpecialty([FromBody] Specialty? specialty)
     {

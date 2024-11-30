@@ -218,7 +218,7 @@ public class TimeTableController : ControllerBase
 
 
                             var subjects = await _context.Classes
-                                .Where(c => lecturer.ClassesId.Contains(c.SpecialtyId)).ToListAsync();
+                                .Where(c => lecturer.ClassesId.Contains(c.Id)).ToListAsync();
                             KeyValuePair<Tuple<int, int>, int> groupClass =
                                 groupClassHoursPerWeek.FirstOrDefault(
                                     g => g.Value < targetGroupClassHoursPerWeek[g.Key]);

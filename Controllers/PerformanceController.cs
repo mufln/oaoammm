@@ -122,7 +122,7 @@ public class PerformanceController : ControllerBase
 
             if (request.GroupId != null)
             {
-                performances = performances.Where(p => p.TimeTable.Groups.Any(g => g.Id == request.GroupId));
+                performances = performances.Where(p => p.TimeTable.GroupIds.Any(g => g == request.GroupId));
             }
 
             if (request.PointsAscending != null)

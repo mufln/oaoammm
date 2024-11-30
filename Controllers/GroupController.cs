@@ -45,7 +45,7 @@ public class GroupsController : ControllerBase
     {
         try
         {
-            var newGroup = new Models.Group { Name = group.Name, InstitutId = group.InstitutId, SpecialtyId = group.SpecialtyId, Course = group.Course };
+            var newGroup = new Group { Name = group.Name, InstitutId = group.InstitutId, SpecialtyId = group.SpecialtyId, Course = group.Course };
             await _context.Groups.AddAsync(newGroup);
             await _context.SaveChangesAsync();
             return Created();
@@ -79,8 +79,17 @@ public class GroupsController : ControllerBase
                 existingGroup.InstitutId = group.InstitutId;
             }
 
+            if (group.Course != 0)
+            {
+                existingGroup.Course = group.Course;
+            }
+
+            if (group.SpecialtyId != 0)
+            {
+                existingGroup.SpecialtyId = group.SpecialtyId;
+            }
             await _context.SaveChangesAsync();
-            return NoContent();
+            return Ok();
         }
         catch (Exception e)
         {

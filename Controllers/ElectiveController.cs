@@ -21,7 +21,6 @@ public class ElectiveController : ControllerBase
         _context = context;
     }
 
-    [Authorize(Roles = "0")]
     [HttpGet]
     public async Task<ActionResult<List<Elective>>> GetAllElectives()
     {
@@ -29,7 +28,6 @@ public class ElectiveController : ControllerBase
         return Ok(electives);
     }
 
-    [Authorize(Roles = "0")]
     [HttpGet("{id}")]
     public async Task<ActionResult<Elective>> GetElectiveById(int id)
     {
@@ -47,7 +45,7 @@ public class ElectiveController : ControllerBase
     {
         try
         {
-            var newElective = new Elective { Name = elective.Name, AffiliationId = elective.AffiliationId };
+            var newElective = new Elective { Name = elective.Name, AffiliationId = elective.AffiliationId, CampusId = elective.CampusId, Description = elective.Description};
             await _context.Electives.AddAsync(newElective);
             await _context.SaveChangesAsync();
             return Created();
@@ -59,7 +57,6 @@ public class ElectiveController : ControllerBase
         }
     }
 
-    [Authorize(Roles = "0")]
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateElective(int id, [FromBody] Elective elective)
     {
@@ -97,7 +94,6 @@ public class ElectiveController : ControllerBase
         }
     }
 
-    [Authorize(Roles = "0")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteElective(int id)
     {
@@ -119,7 +115,7 @@ public class ElectiveController : ControllerBase
     }
 
     [HttpPost("subscribe")]
-    [Authorize(Roles = "0, 1, 2")]
+    [Authorize(Roles = "Admin, Lecturer, Student")]
     public async Task<ActionResult> SubscribeToElective(int id)
     {
         try
@@ -160,7 +156,7 @@ public class ElectiveController : ControllerBase
     }
 
     [HttpDelete("subscribe")]
-    [Authorize(Roles = "0, 1, 2")]
+    [Authorize(Roles = "Admin, Lecturer, Student")]
     public async Task<ActionResult> UnsubscribeFromElective(int id)
     {
         try
@@ -201,7 +197,7 @@ public class ElectiveController : ControllerBase
     }
 
     [HttpGet("my_subscriptions")]
-    [Authorize(Roles = "0, 1, 2")]
+    [Authorize(Roles = "Admin, Lecturer, Student")]
     public async Task<ActionResult<List<Elective>>> GetMySubscriptions()
     {
         try
@@ -230,7 +226,7 @@ public class ElectiveController : ControllerBase
     }
 
     [HttpGet("available")]
-    [Authorize(Roles = "0, 1, 2")]
+    [Authorize(Roles = "Admin, Lecturer, Student")]
     public async Task<ActionResult<List<Elective>>> GetAvailableElectives()
     {
         try
