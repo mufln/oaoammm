@@ -23,8 +23,8 @@ export default function Specialties() {
         }
     })
     return (
-        <div className="w-full">
-            <h1>Группы</h1>
+        <div className="w-full p-3 text-xl">
+            <h1 className="text-4xl font-italic text-indigo-600 mb-4">Группы</h1>
             <div>
                 <GroupEntry entry={null}/>
                 {status === "success" && data.map((entry: any) => <GroupEntry key={entry.id + entry.name + entry.affiliationId } entry={entry}/>)}

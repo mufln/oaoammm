@@ -21,8 +21,8 @@ export default function Affiliations() {
         }
     })
     return (
-        <div className="w-full">
-            <h1>Филиалы</h1>
+        <div className="w-full p-3 text-xl">
+            <h1 className="text-4xl font-italic text-indigo-600 mb-4">Филиалы</h1>
             <div>
                 <AffiliationEntry affiliation={null}/>
                 {status === "success" && data.map((affiliation: any) => <AffiliationEntry key={affiliation.id + affiliation.name} affiliation={affiliation}/>)}

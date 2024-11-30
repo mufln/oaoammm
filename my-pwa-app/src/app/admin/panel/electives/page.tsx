@@ -24,8 +24,8 @@ export default function Specialties() {
         }
     })
     return (
-        <div className="w-full">
-            <h1>Электитвные Занятия</h1>
+        <div className="w-full p-3 text-xl">
+            <h1 className="text-4xl font-italic text-indigo-600 mb-4">Электитвные Занятия</h1>
             <div>
                 <ElectiveEntry entry={null}/>
                 {status === "success" && data.map((entry: any) => <ElectiveEntry key={entry.id + entry.name + entry.affiliationId } entry={entry}/>)}
