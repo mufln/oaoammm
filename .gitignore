@@ -3,3 +3,10 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+.idea/
+.env
+/hihihiha/
+/Services/notes.txt
+/global.json
+/notes.txt
+/docker-image_test.yml
