@@ -133,12 +133,12 @@ export default function SubjectEntry({entry}: {
                             value={affiliation.id}>{affiliation.name}</option>)}
             </select>
             {entry === null &&
-                <button className="mr-4 mt-4 md:mt-0 p-2 bg-indigo-600 text-sm font-bold text-white rounded-lg"
+                <button className="m-2 p-2 ring-1 ring-indigo-600 bg-indigo-600 text-sm font-bold text-white rounded-lg"
                         onClick={() => Save(subject)}>
                     Добавить
                 </button>}
             {entry !== null &&
-                <button className="mr-4 mt-4 md:mt-0 p-2 bg-indigo-600 text-sm font-bold text-white rounded-lg"
+                <button className="m-2 p-2 ring-1 ring-indigo-600 bg-indigo-600 text-sm font-bold text-white rounded-lg"
                         onClick={() => Update(entry?.id, subject)}>
                     Изменить
                 </button>}

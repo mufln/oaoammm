@@ -76,11 +76,11 @@ export default function RoomEntry({entry}: {entry: {id: number, name: string, ca
                 <option value={0} disabled>Выберите корпус</option>
                 {campuses.map((campus: any) => <option key={"asdsad" + campus.id + campus.address} value={campus.id}>{campus.address}</option>)}
             </select>}
-            {entry === null && <button className="mr-4 mt-4 md:mt-0 p-2 bg-indigo-600 text-sm font-bold text-white rounded-lg"
+            {entry === null && <button className="m-2 p-2 ring-1 ring-indigo-600 bg-indigo-600 text-sm font-bold text-white rounded-lg"
                                        onClick={() => Save(room)}>
                 Добавить
             </button>}
-            {entry !== null && <button className="mr-4 mt-4 md:mt-0 p-2 bg-indigo-600 text-sm font-bold text-white rounded-lg"
+            {entry !== null && <button className="m-2 p-2 ring-1 ring-indigo-600 bg-indigo-600 text-sm font-bold text-white rounded-lg"
                                        onClick={() => Update(entry?.id, room)}>
                 Изменить
             </button>}

@@ -76,11 +76,11 @@ export default function CampusEntry({entry}: {entry: {id: number, address: strin
                 <option value={0} disabled>Выберите филиал</option>
                 {affiliationStatus === "success" && affiliationIsLoading === false && affiliations.map((affiliation: any) => <option key={"asdsad" + affiliation.id + affiliation.name} value={affiliation.id}>{affiliation.name}</option>)}
             </select>
-            {entry === null && <button className="mr-4 mt-4 md:mt-0 p-2 bg-indigo-600 text-sm font-bold text-white rounded-lg"
+            {entry === null && <button className="m-2 p-2 ring-1 ring-indigo-600 bg-indigo-600 text-sm font-bold text-white rounded-lg"
                                              onClick={() => Save(capmus)}>
                 Добавить
             </button>}
-            {entry !== null && <button className="mr-4 mt-4 md:mt-0 p-2 bg-indigo-600 text-sm font-bold text-white rounded-lg"
+            {entry !== null && <button className="m-2 p-2 ring-1 ring-indigo-600 bg-indigo-600 text-sm font-bold text-white rounded-lg"
                                              onClick={() => Update(entry?.id, capmus)}>
                 Изменить
             </button>}
