@@ -26,7 +26,10 @@ export default function Specialties() {
             <h1 className="text-4xl font-italic text-indigo-600 mb-4">Пользователи</h1>
             <div>
                 <UserEntry entry={null}/>
-                {status === "success" && data.map((entry: any) => <UserEntry key={entry.id + entry.name + entry.affiliationId } entry={entry}/>)}
+                <div className="border-b-2 border-gray-300"></div>
+                <div className="flex flex-row gap-x-2 overflow-x-scroll ">
+                    {status === "success" && data.map((entry: any) => <UserEntry key={entry.id + entry.name + entry.affiliationId } entry={entry}/>)}
+                </div>
             </div>
         </div>
     )

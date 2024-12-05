@@ -6,157 +6,239 @@ import { useQuery, QueryClient, useQueryClient } from "@tanstack/react-query";
 
 
 const getGroupTimeTable = async (groupId: number) => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/timetable/group/${groupId}`,
-      {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/timetable/group/${groupId}`, {
         method: "GET",
-        credentials: "include"
+        credentials: "include",
+        headers: {
+          "Accept": "application/json",
+        },
+      });
+  
+      // Проверяем статус-код ответа
+      if (response.status === 200) {
+        const timetable = await response.json(); // Преобразуем ответ в JSON
+        return timetable; // Возвращаем массив расписание
+      } else {
+        throw new Error('Не удалось получить расписание');
       }
-    );
-    const data = await response.json();
+    }
+    catch (error) {
+      console.error('Ошибка при получении расписания:', error);
+      throw error; // Пробрасываем ошибку дальше
+    }
+  };
 
-    return data;
-  }
+const tt = await getGroupTimeTable(1);
+console.log(tt);
 
+
+function defineTime(slot: number) {
+    switch (slot) {
+        case 1:
+            return "09:00 - 10:30";
+        case 2:
+            return "10:40 - 12:10";
+        case 3:
+            return "12:40 - 14:10";
+        case 4:
+            return "14:20 - 15:50";
+        case 5:
+            return "16:20 - 17:50";
+        case 6:
+            return "18:00 - 19:30";
+        default:
+            return "";
+    }
+}
+
+function transformData(inputData) {
+    const weeksData = [];
+
+    // Группируем данные по неделям
+    inputData.forEach(item => {
+        const weekIndex = item.week - 1; // Индекс недели (0 для первой недели, 1 для второй и т.д.)
+        const dayNames = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"];
+        const dayIndex = item.day - 1; // Индекс дня (0 для понедельника, 1 для вторника и т.д.)
+
+        // Убедимся, что массив для недели существует
+        if (!weeksData[weekIndex]) {
+            weeksData[weekIndex] = {
+                nomer: weekIndex + 1,
+                type: weekIndex % 2 === 0 ? "Нечетная" : "Четная",
+                days: Array(6).fill(null).map((_, i) => ({ day: dayNames[i], subjects: [] }))
+            };
+        }
+
+        // Создаем объект предмета
+        const subject = {
+            number: item.slot,
+            name: item.class.name,
+            time: `${defineTime(item.slot)}`, // Пример времени, можно адаптировать
+            teacher: item.lecturer.user.name,
+            room: item.room.name,
+            building: item.room.campus.address
+        };
+
+        // Добавляем предмет в соответствующий день
+        weeksData[weekIndex].days[dayIndex].subjects.push(subject);
+    });
+
+    // Сортируем предметы по номеру пары в каждом дне
+    weeksData.forEach(week => {
+        week.days.forEach(day => {
+            day.subjects.sort((a, b) => a.number - b.number);
+        });
+    });
+
+    return weeksData;
+}
+
+
+// Пример использования
+const inputData = tt;
+const weeksData = transformData(inputData);
+// console.log(JSON.stringify(outputData, null, 2));
 
 // Example data structure for weeksData
-const weeksData = [
-    {
-        nomer: 1,
-        type: "Нечетная",
-        days: [
-            { day: "Понедельник", subjects: [
-                {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 5, name: "Math", time: "15.30 - 17.00", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-            ] },
-            { day: "Вторник", subjects: [
-                {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-            ] },
-            { day: "Среда", subjects: [
-                {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 5, name: "Math", time: "15.30 - 17.00", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 6, name: "Math", time: "17.10 - 18.40", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-            ] },
-            { day: "Четверг", subjects: [
-                {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 5, name: "Math", time: "15.30 - 17.00", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-            ] },
-            { day: "Пятница", subjects: [
-                {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-            ] },
-            { day: "Суббота", subjects: [
-                {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-            ] },
-        ],
-    },
-    {
-        nomer: 2,
-        type: "Четная",
-        days: [
-            { day: "Понедельник", subjects: [
-                {number: 1, name: "Math2", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 5, name: "Math", time: "15.30 - 17.00", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-            ] },
-            { day: "Вторник", subjects: [
-                {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-            ] },
-            { day: "Среда", subjects: [
-                {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 5, name: "Math", time: "15.30 - 17.00", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 6, name: "Math", time: "17.10 - 18.40", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-            ] },
-            { day: "Четверг", subjects: [
-                {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 5, name: "Math", time: "15.30 - 17.00", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-            ] },
-            { day: "Пятница", subjects: [
-                {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-            ] },
-            { day: "Суббота", subjects: [
-                {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-            ] },
-        ]
-    },
-    {
-        nomer: 3,
-        type: "Нечетная",
-        days: [
-            { day: "Понедельник", subjects: [
-                {number: 1, name: "Math3", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 5, name: "Math", time: "15.30 - 17.00", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-            ] },
-            { day: "Вторник", subjects: [
-                {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-            ] },
-            { day: "Среда", subjects: [
-                {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 5, name: "Math", time: "15.30 - 17.00", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 6, name: "Math", time: "17.10 - 18.40", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-            ] },
-            { day: "Четверг", subjects: [
-                {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 5, name: "Math", time: "15.30 - 17.00", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-            ] },
-            { day: "Пятница", subjects: [
-                {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-            ] },
-            { day: "Суббота", subjects: [
-                {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-                {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
-            ] },
-        ]
-    }         
-    // Add more weeks as needed
-];
+// const weeksData = [
+//     {
+//         nomer: 1,
+//         type: "Нечетная",
+//         days: [
+//             { day: "Понедельник", subjects: [
+//                 {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 5, name: "Math", time: "15.30 - 17.00", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//             ] },
+//             { day: "Вторник", subjects: [
+//                 {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//             ] },
+//             { day: "Среда", subjects: [
+//                 {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 5, name: "Math", time: "15.30 - 17.00", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 6, name: "Math", time: "17.10 - 18.40", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//             ] },
+//             { day: "Четверг", subjects: [
+//                 {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 5, name: "Math", time: "15.30 - 17.00", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//             ] },
+//             { day: "Пятница", subjects: [
+//                 {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//             ] },
+//             { day: "Суббота", subjects: [
+//                 {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//             ] },
+//         ],
+//     },
+//     {
+//         nomer: 2,
+//         type: "Четная",
+//         days: [
+//             { day: "Понедельник", subjects: [
+//                 {number: 1, name: "Math2", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 5, name: "Math", time: "15.30 - 17.00", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//             ] },
+//             { day: "Вторник", subjects: [
+//                 {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//             ] },
+//             { day: "Среда", subjects: [
+//                 {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 5, name: "Math", time: "15.30 - 17.00", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 6, name: "Math", time: "17.10 - 18.40", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//             ] },
+//             { day: "Четверг", subjects: [
+//                 {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 5, name: "Math", time: "15.30 - 17.00", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//             ] },
+//             { day: "Пятница", subjects: [
+//                 {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//             ] },
+//             { day: "Суббота", subjects: [
+//                 {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//             ] },
+//         ]
+//     },
+//     {
+//         nomer: 3,
+//         type: "Нечетная",
+//         days: [
+//             { day: "Понедельник", subjects: [
+//                 {number: 1, name: "Math3", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 5, name: "Math", time: "15.30 - 17.00", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//             ] },
+//             { day: "Вторник", subjects: [
+//                 {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//             ] },
+//             { day: "Среда", subjects: [
+//                 {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 5, name: "Math", time: "15.30 - 17.00", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 6, name: "Math", time: "17.10 - 18.40", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//             ] },
+//             { day: "Четверг", subjects: [
+//                 {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 5, name: "Math", time: "15.30 - 17.00", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//             ] },
+//             { day: "Пятница", subjects: [
+//                 {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 4, name: "Math", time: "13.50 - 15.20", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//             ] },
+//             { day: "Суббота", subjects: [
+//                 {number: 1, name: "Math", time: "9.00 - 10.30", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 2, name: "Math", time: "10.40 - 12.10", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//                 {number: 3, name: "Math", time: "12.20 - 13.50", teacher: "Евгений Лебедев", room: "101", building: "В-78."},
+//             ] },
+//         ]
+//     }         
+//     // Add more weeks as needed
+// ];
 
 const ScheduleTemplate = (day: string, week: number) => {
     let index = 0;

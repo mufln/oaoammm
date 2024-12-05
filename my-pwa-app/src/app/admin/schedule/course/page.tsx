@@ -237,37 +237,64 @@ const timeSlots = {
 
 const Timetable = () => {
   const [currentWeek, setCurrentWeek] = React.useState(1);
+  const [schedule, setSchedule] = React.useState({});
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
+  const [uniqueGroupIds, setUniqueGroupIds] = React.useState(new Set());
 
-  const schedule = {};
-  daysOfWeek.forEach(day => {
-    schedule[day] = {};
-  });
+  const fetchSchedule = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const newSchedule = {};
+      daysOfWeek.forEach(day => {
+        newSchedule[day] = {};
+      });
 
-  const uniqueGroupIds = new Set();
+      const newUniqueGroupIds = new Set();
 
-  timetableData.forEach(week => {
-    week.forEach(item => {
-      if (item.week === currentWeek) {
-        const day = daysOfWeek[item.day - 1];
+      // Обработка расписания
+      await Promise.all(
+        timetableData.map(async week => {
+          await Promise.all(
+            week.map(async item => {
+              if (item.week === currentWeek) {
+                const day = daysOfWeek[item.day - 1];
 
-        item.groupIds.forEach(groupId => uniqueGroupIds.add(groupId));
+                item.groupIds.forEach(groupId => newUniqueGroupIds.add(groupId));
 
-        const entry = getClassNameById(item.classId);
-        const lecturer =  getLecturerNameById(item.lecturerId);
-        const room =  getRoomNameById(item.roomId);
+                const [entry, lecturer, room] = await Promise.all([
+                  getClassNameById(item.classId),
+                  getLecturerNameById(item.lecturerId),
+                  getRoomNameById(item.roomId),
+                ]);
 
-        item.groupIds.forEach(groupId => {
-          if (!schedule[day][groupId]) {
-            schedule[day][groupId] = [];
-          }
+                item.groupIds.forEach(groupId => {
+                  if (!newSchedule[day][groupId]) {
+                    newSchedule[day][groupId] = [];
+                  }
 
-          schedule[day][groupId].push({ entry, lecturer, room, slot: item.slot });
-        });
-      }
-    });
-  });
+                  newSchedule[day][groupId].push({ entry, lecturer, room, slot: item.slot });
+                });
+              }
+            })
+          );
+        })
+      );
 
-  const groups = Array.from(uniqueGroupIds);
+      setSchedule(newSchedule);
+      setUniqueGroupIds(newUniqueGroupIds);
+    } catch (err) {
+      setError('Ошибка при загрузке расписания');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchSchedule();
+  }, [currentWeek]);
 
   const nextWeek = () => {
     setCurrentWeek(prevWeek => prevWeek + 1);
@@ -276,6 +303,9 @@ const Timetable = () => {
   const prevWeek = () => {
     setCurrentWeek(prevWeek => (prevWeek > 1 ? prevWeek - 1 : 1));
   };
+
+  if (loading) return <div>Загрузка...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="container mx-auto p-4">
@@ -291,8 +321,8 @@ const Timetable = () => {
             <tr className="bg-gray-100">
               <th className="border border-gray-300 p-2">День недели</th>
               <th className="border border-gray-300 p-2">Время</th>
-              {groups.map((group, index) => (
-                <th key={index} className="border border-gray-300 p-2">Группа {getGroupNameById(group)}</th>
+              {Array.from(uniqueGroupIds).map((group, index) => (
+                <th key={index} className="border border-gray-300 p-2">Группа {group}</th>
               ))}
             </tr>
           </thead>
@@ -307,7 +337,7 @@ const Timetable = () => {
                       </td>
                     ) : null}
                     <td className="border border-gray-300 p-2">{timeSlots[slot]}</td>
-                    {groups.map(group => {
+                    {Array.from(uniqueGroupIds).map(group => {
                       const groupEntries = schedule[day][group] || [];
                       const groupEntry = groupEntries.find(e => e.slot === parseInt(slot));
                       return (
@@ -319,7 +349,7 @@ const Timetable = () => {
                               <div> <div>{groupEntry.room}</div><div className='text-sm text-gray-500'>Аудитория</div></div>
                             </div>
                           ) : ''}
- </td>
+                        </td>
                       );
                     })}
                   </tr>
@@ -329,7 +359,6 @@ const Timetable = () => {
           </tbody>
         </table>
       </div>
-      
     </div>
   );
 };
