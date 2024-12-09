@@ -2,8 +2,21 @@
 import React, { useState } from "react";
 import leftArrowG from "./left"
 import rightArrowG from "./right"
-import { useQuery, QueryClient, useQueryClient } from "@tanstack/react-query";
+import { useQuery} from "@tanstack/react-query";
 
+
+const getMe = async () => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Accept": "application/json",
+    },
+  });
+
+  const data = await response.json();
+  return data;
+};
 
 const getGroupTimeTable = async (groupId: number) => {
     try {
@@ -29,8 +42,10 @@ const getGroupTimeTable = async (groupId: number) => {
     }
   };
 
-const tt = await getGroupTimeTable(1);
-console.log(tt);
+const me = await getMe();
+const tt = await getGroupTimeTable(me.groupId);
+// console.log(me);
+// console.log(tt);
 
 
 function defineTime(slot: number) {

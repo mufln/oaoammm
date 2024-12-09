@@ -29,41 +29,23 @@ const login = async (email: string, password: string) => {
   }
 };
 
-// Функция для получения списка пользователей
-const getUsers = async () => {
+const getMe = async () => {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
       method: "GET",
       credentials: "include",
       headers: {
         "Accept": "application/json",
       },
     });
-
-    // Проверяем статус-код ответа
-    if (response.status === 200) {
-      const users = await response.json(); // Преобразуем ответ в JSON
-      return users; // Возвращаем массив пользователей
-    } else {
-      throw new Error('Не удалось получить пользователей');
-    }
-  } catch (error) {
-    console.error('Ошибка при получении пользователей:', error);
-    throw error; // Пробрасываем ошибку дальше
+    const data = await response.json();
+    return data;
   }
-};
-
-// Пример использования функции getUsers
-const fetchUsers = async () => {
-  try {
-    const usersArray = await getUsers(); // Получаем массив пользователей
-    return usersArray; // Возвращаем массив пользователей
-  } catch (error: any) {
-    console.error('Ошибка:', error.message);
+  catch (error) {
+    console.log(error);
+    return null;
   }
-};
-
-// Вызов функции для получения пользователей
+}
 
 
 // Главный компонент аутентификации
@@ -84,19 +66,13 @@ export default function Authorization() {
     try {
       await login(email, password); // Вызов функции логина
       
-      const users = await fetchUsers();
-      let role = null;
-
-      for (const user of users) {
-        if (user.email === email && user.password === password) {
-          role = user.role;
-        }
-      }
+      const me = await getMe();
       
-      if (role === 0 || role === 1) {
+      
+      if (me.role === 0 || me.role === 1) {
         router.push('/admin/panel'); // Перенаправление на панель управления
       }
-      else if (role === 2) {
+      else if (me.role === 2) {
         router.push('/student/stud-schedule'); // Перенаправление на панель управления
       }
       //router.push('/dashboard'); // Перенаправление на панель управления
